@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -Wall -Wextra CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o -o node_mcp  libshm_allocator.a -lrt 

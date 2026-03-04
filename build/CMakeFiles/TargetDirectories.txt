@@ -1,0 +1,11 @@
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/shm_allocator.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/test_allocator.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/test_mpsc.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/shm_registry.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/shm_logger.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/node_source.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/node_sink.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/node_normal.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/node_mcp.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/.ssh/softbus/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -Wall -Wextra CMakeFiles/node_receiver.dir/apps/node_receiver.cpp.o -o node_receiver  libshm_allocator.a -lrt 

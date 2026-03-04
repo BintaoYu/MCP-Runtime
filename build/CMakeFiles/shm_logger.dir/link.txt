@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -Wall -Wextra CMakeFiles/shm_logger.dir/services/logger/main.cpp.o -o shm_logger  -lrt 

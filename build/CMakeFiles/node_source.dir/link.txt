@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -Wall -Wextra CMakeFiles/node_source.dir/apps/node_source.cpp.o -o node_source  libshm_allocator.a -lrt 
