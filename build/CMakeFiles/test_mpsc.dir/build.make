@@ -92,6 +92,7 @@ test_mpsc_EXTERNAL_OBJECTS =
 
 test_mpsc: CMakeFiles/test_mpsc.dir/components/mpsc_queue/test_mpsc.cpp.o
 test_mpsc: CMakeFiles/test_mpsc.dir/build.make
+test_mpsc: libshm_allocator.a
 test_mpsc: CMakeFiles/test_mpsc.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_mpsc"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test_mpsc.dir/link.txt --verbose=$(VERBOSE)

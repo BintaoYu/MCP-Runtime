@@ -317,4 +317,5 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: \
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h \
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h \
  /usr/include/c++/11/atomic \
- /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h
+ /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h \
+ /usr/include/c++/11/mutex /usr/include/c++/11/bits/unique_lock.h

@@ -1,6 +1,6 @@
 CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
  /home/ubuntu/.ssh/softbus/apps/node_mcp.cpp /usr/include/stdc-predef.h \
- /home/ubuntu/.ssh/softbus/components/mcp/MCPResourceNode.hpp \
+ /home/ubuntu/.ssh/softbus/apps/../components/mcp/MCPResourceNode.hpp \
  /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \

@@ -1,1 +1,1 @@
-/usr/bin/c++ -O3 -Wall -Wextra CMakeFiles/shm_registry.dir/services/registry/main.cpp.o -o shm_registry  libshm_allocator.a -lrt 
+/usr/bin/c++ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o -o shm_registry  libshm_allocator.a -lrt 

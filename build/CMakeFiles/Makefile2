@@ -146,7 +146,7 @@ CMakeFiles/test_allocator.dir/clean:
 # Target rules for target CMakeFiles/test_mpsc.dir
 
 # All Build rule for target.
-CMakeFiles/test_mpsc.dir/all:
+CMakeFiles/test_mpsc.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_mpsc.dir/build.make CMakeFiles/test_mpsc.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_mpsc.dir/build.make CMakeFiles/test_mpsc.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=18,19 "Built target test_mpsc"
@@ -154,7 +154,7 @@ CMakeFiles/test_mpsc.dir/all:
 
 # Build rule for subdir invocation for target.
 CMakeFiles/test_mpsc.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/.ssh/softbus/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/.ssh/softbus/build/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_mpsc.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/.ssh/softbus/build/CMakeFiles 0
 .PHONY : CMakeFiles/test_mpsc.dir/rule

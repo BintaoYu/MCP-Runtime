@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/ubuntu/.ssh/softbus/components
 
-CXX_FLAGS = -O3 -Wall -Wextra -std=gnu++17
+CXX_FLAGS = -Wall -Wextra -O3 -pthread -std=c++17
 
