@@ -64,7 +64,7 @@ int main() {
     );
 
     // ========================================================================
-    // 能力 2：注册系统诊断能力 (原生 JSON 构建，防复制截断)
+    // 能力 2：注册系统诊断能力 
     // ========================================================================
     mcp_bridge.register_tool(
         "check_latency",
@@ -81,12 +81,13 @@ int main() {
         [](const json& args) -> json {
             int lines = args.value("lines", 50);
             json stats = read_latency_csv(lines);
-            return {{"content", {{{"type", "text"}, {"text", stats.dump(2)}}}}};
+            // 严格遵循 MCP 规范：内容必须是 array 包裹的对象
+            return {{"content", json::array({{{"type", "text"}, {"text", stats.dump(2)}}})}};
         }
     );
 
     // ========================================================================
-    // 能力 3：注册物理控制能力 (原生 JSON 构建，防复制截断)
+    // 能力 3：注册物理控制能力
     // ========================================================================
     mcp_bridge.register_tool(
         "set_motor_state",
@@ -102,20 +103,19 @@ int main() {
         },
         [&mcp_bridge](const json& args) -> json {
             MotorControl cmd;
-            // 使用 value() 提供默认值，防止大模型抽风少发参数导致 C++ 崩溃
             cmd.speed = args.value("speed", 0.0f);
             cmd.torque = args.value("torque", 0.0f);
             cmd.direction = args.value("direction", 1);
 
             int target_id = mcp_bridge.lookup_node("DashboardUI", TYPE_ID(MotorControl));
             if (target_id < 0) {
-                return {{"isError", true}, {"content", {{{"type", "text"}, {"text", "发送失败：目标控制节点离线或不存在"}}}}};
+                return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "发送失败：目标控制节点离线或不存在"}}})}};
             }
 
             if (mcp_bridge.forward(target_id, TYPE_ID(MotorControl), &cmd, sizeof(cmd))) {
-                return {{"content", {{{"type", "text"}, {"text", "硬件指令已成功下发至软总线！"}}}}};
+                return {{"content", json::array({{{"type", "text"}, {"text", "硬件指令已成功下发至软总线！"}}})}};
             } else {
-                return {{"isError", true}, {"content", {{{"type", "text"}, {"text", "发送失败：总线队列拥塞"}}}}};
+                return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "发送失败：总线队列拥塞"}}})}};
             }
         }
     );
@@ -132,11 +132,16 @@ int main() {
             json req = json::parse(line);
             if (!req.contains("method")) continue;
 
-            json res = {{"jsonrpc", "2.0"}};
-            if (req.contains("id")) res["id"] = req["id"];
-            
+            bool is_request = req.contains("id");
             std::string method = req["method"];
 
+            // 【核心修复 1】如果这是一条通知（例如 notifications/initialized），绝对不能回复！直接跳过！
+            if (!is_request) {
+                continue; 
+            }
+
+            json res = {{"jsonrpc", "2.0"}, {"id", req["id"]}};
+            
             if (method == "initialize") {
                 res["result"] = {
                     {"protocolVersion", "2024-11-05"},
@@ -144,18 +149,32 @@ int main() {
                     {"serverInfo", {{"name", "cxx-softbus-mcp"}, {"version", "1.0.0"}}}
                 };
             } 
-            else if (method == "notifications/initialized") continue; 
-            else if (method == "resources/list") res["result"] = mcp_bridge.mcp_list_resources();
-            else if (method == "resources/read") res["result"] = mcp_bridge.mcp_read_resource(req["params"]["uri"].get<std::string>());
-            
-            // Tool 相关的路由
-            else if (method == "tools/list") res["result"] = mcp_bridge.mcp_list_tools();
-            else if (method == "tools/call") res["result"] = mcp_bridge.mcp_call_tool(req["params"]["name"].get<std::string>(), req["params"].value("arguments", json::object()));
-            
-            else res["error"] = {{"code", -32601}, {"message", "Method not found"}};
+            // 【核心修复 2】必须响应 ping心跳！否则新版网页端会直接罢工白屏
+            else if (method == "ping") {
+                res["result"] = json::object(); 
+            }
+            else if (method == "resources/list") {
+                res["result"] = mcp_bridge.mcp_list_resources();
+            }
+            else if (method == "resources/read") {
+                res["result"] = mcp_bridge.mcp_read_resource(req["params"]["uri"].get<std::string>());
+            }
+            else if (method == "tools/list") {
+                res["result"] = mcp_bridge.mcp_list_tools();
+            }
+            else if (method == "tools/call") {
+                std::string name = req["params"]["name"];
+                json arguments = req["params"].value("arguments", json::object());
+                res["result"] = mcp_bridge.mcp_call_tool(name, arguments);
+            }
+            else {
+                res["error"] = {{"code", -32601}, {"message", "Method not found"}};
+            }
 
             std::cout << res.dump() << std::endl;
-        } catch (...) {}
+        } catch (...) {
+            // JSON 解析失败时静默，防止输出脏文本导致通信通道污染
+        }
     }
 
     return 0;

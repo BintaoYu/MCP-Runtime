@@ -1,5 +1,6 @@
 CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: \
  /home/ubuntu/.ssh/softbus/apps/node_sink.cpp /usr/include/stdc-predef.h \
+ /home/ubuntu/.ssh/softbus/components/framework/softbus_node.h \
  /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -150,9 +151,8 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc \
- /home/ubuntu/.ssh/softbus/components/framework/softbus_node.h \
- /usr/include/fcntl.h /usr/include/x86_64-linux-gnu/bits/fcntl.h \
+ /usr/include/c++/11/bits/istream.tcc /usr/include/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl.h \
  /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
  /usr/include/linux/falloc.h /usr/include/x86_64-linux-gnu/bits/stat.h \

@@ -20,11 +20,12 @@ void MCPResourceNode::init_bus_handler() {
 
 json MCPResourceNode::mcp_list_resources() {
     json resources = json::array();
-    std::shared_lock lock(cache_mutex_);
-    for (const auto& [uri, json_data] : shadow_cache_) {
+    
+    // 【核心修复】：根据我们在 C++ 里的注册表直接宣告资源，不依赖是否已经收到数据
+    for (const auto& [type_id, info] : type_parsers_) {
         resources.push_back({
-            {"uri", uri},
-            {"name", "Real-time state of " + uri},
+            {"uri", "bus://types/" + info.resource_name + "/latest"},
+            {"name", "Real-time state of " + info.resource_name},
             {"mimeType", "application/json"}
         });
     }
@@ -37,33 +38,29 @@ json MCPResourceNode::mcp_read_resource(std::string_view uri) {
     if (it != shadow_cache_.end()) {
         return json{{"contents", json::array({{{"uri", std::string(uri)}, {"mimeType", "application/json"}, {"text", it->second.dump()}}})}};
     }
-    return json{{"error", "Resource not found on SoftBus"}};
+    
+    // 【防呆设计】：如果资源存在，但底层总线还没发来数据，温柔地告诉大模型在等待
+    return json{{"contents", json::array({{{"uri", std::string(uri)}, {"mimeType", "application/json"}, {"text", "{\"status\": \"waiting_for_hardware_data\"}"}}})}};
 }
 
 // ----------------------------------------------------------------------------
-// Tools 核心路由分发
+// Tools 逻辑保持不变
 // ----------------------------------------------------------------------------
 json MCPResourceNode::mcp_list_tools() {
     json tool_list = json::array();
     for (const auto& [name, info] : tools_) {
-        tool_list.push_back({
-            {"name", name},
-            {"description", info.description},
-            {"inputSchema", info.input_schema}
-        });
+        tool_list.push_back({{"name", name}, {"description", info.description}, {"inputSchema", info.input_schema}});
     }
     return json{{"tools", tool_list}};
 }
 
 json MCPResourceNode::mcp_call_tool(std::string_view name, const json& arguments) {
     auto it = tools_.find(std::string(name));
-    if (it == tools_.end()) {
-        return json{{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "Tool not found"}}})}};
-    }
+    if (it == tools_.end()) return json{{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "Tool not found"}}})}};
     try {
         return it->second.handler(arguments);
     } catch (const std::exception& e) {
-        return json{{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", std::string("Tool execution failed: ") + e.what()}}})}};
+        return json{{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", std::string("Tool failed: ") + e.what()}}})}};
     }
 }
 

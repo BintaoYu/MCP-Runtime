@@ -3,6 +3,7 @@
 
 CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
   /usr/include/stdc-predef.h \
+  ../components/framework/softbus_node.h \
   /usr/include/c++/11/iostream \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -187,7 +188,6 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
   /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc \
-  ../components/framework/softbus_node.h \
   /usr/include/fcntl.h \
   /usr/include/x86_64-linux-gnu/bits/fcntl.h \
   /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
@@ -268,8 +268,6 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 ../components/mpsc_queue/lockfree_mpsc.h:
 
 /usr/include/c++/11/bits/atomic_lockfree_defines.h:
-
-/usr/include/c++/11/bits/stl_construct.h:
 
 /usr/include/c++/11/bits/cxxabi_forced.h:
 
@@ -355,6 +353,8 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 
 /usr/include/c++/11/new:
 
+/usr/include/linux/close_range.h:
+
 /usr/include/wchar.h:
 
 /usr/include/c++/11/bits/cxxabi_init_exception.h:
@@ -368,6 +368,10 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 /usr/include/c++/11/tuple:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/c++/11/debug/assertions.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
 
 /usr/include/x86_64-linux-gnu/bits/fcntl2.h:
 
@@ -399,12 +403,6 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
-
-/usr/include/c++/11/debug/assertions.h:
-
-/usr/include/linux/close_range.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib.h:
@@ -424,30 +422,6 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 /usr/include/x86_64-linux-gnu/bits/struct_stat.h:
 
 /usr/include/x86_64-linux-gnu/bits/fcntl.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
-
-/usr/include/c++/11/bits/ostream_insert.h:
-
-/usr/include/c++/11/ostream:
-
-/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
-
-/usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h:
-
-/usr/include/x86_64-linux-gnu/bits/confname.h:
-
-/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
-/usr/include/c++/11/iostream:
-
-/usr/include/c++/11/bits/node_handle.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
-/usr/include/c++/11/ctime:
-
-/usr/include/c++/11/ext/type_traits.h:
 
 /usr/include/c++/11/ext/numeric_traits.h:
 
@@ -476,6 +450,30 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 /usr/include/linux/errno.h:
 
 /usr/include/c++/11/functional:
+
+/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
+
+/usr/include/c++/11/bits/ostream_insert.h:
+
+/usr/include/c++/11/ostream:
+
+/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/c++/11/iostream:
+
+/usr/include/c++/11/bits/node_handle.h:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/c++/11/ctime:
+
+/usr/include/c++/11/ext/type_traits.h:
 
 /usr/include/stdc-predef.h:
 
@@ -572,6 +570,8 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: ../apps/node_sink.cpp \
 /usr/include/c++/11/bits/cpp_type_traits.h:
 
 /usr/include/c++/11/bits/stl_iterator_base_funcs.h:
+
+/usr/include/c++/11/bits/stl_construct.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
 

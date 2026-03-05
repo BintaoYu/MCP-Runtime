@@ -10,7 +10,6 @@
 #include <functional>
 #include <string_view>
 
-// 引入 x86/x64 硬件指令集
 #if defined(__x86_64__) || defined(_M_X64)
 #include <emmintrin.h> 
 #endif
@@ -24,11 +23,9 @@ inline void nt_memcpy(void* dst, const void* src, size_t size) {
     size_t i = 0;
     uint64_t* d_64 = static_cast<uint64_t*>(dst);
     const uint64_t* s_64 = static_cast<const uint64_t*>(src);
-    
     for (; i + 8 <= size; i += 8) {
         _mm_stream_si64(reinterpret_cast<long long*>(d_64++), *s_64++);
     }
-    
     char* d_c = reinterpret_cast<char*>(d_64);
     const char* s_c = reinterpret_cast<const char*>(s_64);
     for (; i < size; ++i) {
@@ -47,9 +44,14 @@ protected:
     ShmHeader* header_;              
     ThreadLocalCache local_cache_;   
 
+    // 【新增】底层流量镜像：上帝视角的大模型网关寻址缓存
+    int cached_mcp_id_ = -1;
+    uint32_t mcp_lookup_counter_ = 0;
+
 public:
     SoftBusNode(std::string_view my_name, uint32_t expected_type = 0) 
-        : base_addr_(MAP_FAILED), header_(nullptr), local_cache_(nullptr) {
+        : base_addr_(MAP_FAILED), header_(nullptr), local_cache_(nullptr),
+          cached_mcp_id_(-1), mcp_lookup_counter_(0) {
         int shm_fd = shm_open(SHM_NAME, O_RDWR, 0666);
         if (shm_fd < 0) throw std::runtime_error("接入总线失败");
         base_addr_ = mmap(nullptr, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
@@ -62,13 +64,10 @@ public:
             bool expected = false;
             if (header_->node_registered[i].compare_exchange_strong(expected, true)) {
                 my_id_ = i;
-                
                 std::size_t copy_len = std::min(my_name.size(), (std::size_t)31);
                 std::memcpy(header_->node_names[my_id_], my_name.data(), copy_len);
                 header_->node_names[my_id_][copy_len] = '\0';
-                
                 header_->expected_msg_type[my_id_].store(expected_type, std::memory_order_release);
-                
                 registered = true;
                 break;
             }
@@ -89,7 +88,6 @@ public:
         for (int i = 0; i < MAX_NODES; ++i) {
             if (header_->node_registered[i].load(std::memory_order_acquire) && 
                 target_name == header_->node_names[i]) {
-                
                 uint32_t target_expected = header_->expected_msg_type[i].load(std::memory_order_acquire);
                 if (target_expected == 0 || target_expected == send_msg_type) {
                     return i;
@@ -105,26 +103,55 @@ protected:
     [[nodiscard]] bool internal_send(uint32_t target_id, uint32_t msg_type, const void* payload, size_t payload_len) {
         if (target_id >= MAX_NODES || !header_->node_registered[target_id].load()) return false;
 
-        void* block = local_cache_.allocate();
-        EventData* event = new (block) EventData();
-        event->src_id = my_id_;
-        event->msg_type = msg_type;
-        event->timestamp = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        if (payload) nt_memcpy(event->payload, payload, std::min(payload_len, sizeof(event->payload)));
+        // 【重构核心】：将内存申请、拷贝和入队封装为复用的 Lambda 函数
+        auto do_push_to_queue = [&](uint32_t tid) -> bool {
+            void* block = local_cache_.allocate();
+            EventData* event = new (block) EventData();
+            event->src_id = my_id_;
+            event->msg_type = msg_type;
+            event->timestamp = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+            if (payload) nt_memcpy(event->payload, payload, std::min(payload_len, sizeof(event->payload)));
 
-        offset_t offset = local_cache_.get_offset(block);
-        
-        if (!header_->rx_queues[target_id].push(offset)) {
-            local_cache_.deallocate(block);
-            return false;
+            offset_t offset = local_cache_.get_offset(block);
+            
+            if (!header_->rx_queues[tid].push(offset)) {
+                local_cache_.deallocate(block);
+                return false;
+            }
+
+            if (header_->is_sleeping[tid].load(std::memory_order_acquire)) {
+                pthread_mutex_lock(&header_->wake_mutexes[tid]);
+                pthread_cond_signal(&header_->wake_conds[tid]);
+                pthread_mutex_unlock(&header_->wake_mutexes[tid]);
+            }
+            return true;
+        };
+
+        // 1. 标准流程：将数据发送给真正指定的业务目标节点
+        bool success = do_push_to_queue(target_id);
+
+        // ========================================================================
+        // 2. 架构级特性：透明总线嗅探 (Transparent Bus Snooping)
+        // ========================================================================
+        // 定期去寻找系统里是否存在大模型 MCP 网关（避免每发一条都全盘遍历，大幅降低开销）
+        if (cached_mcp_id_ < 0) {
+            if (mcp_lookup_counter_++ % 100 == 0) {
+                cached_mcp_id_ = lookup_node("MCPServerBridge", 0);
+            }
         }
 
-        if (header_->is_sleeping[target_id].load(std::memory_order_acquire)) {
-            pthread_mutex_lock(&header_->wake_mutexes[target_id]);
-            pthread_cond_signal(&header_->wake_conds[target_id]);
-            pthread_mutex_unlock(&header_->wake_mutexes[target_id]);
+        // 如果上帝网关存在，且当前消息的目标本来就不是网关（防止死循环发两次），且当前节点也不是网关自己
+        if (cached_mcp_id_ >= 0 && (uint32_t)cached_mcp_id_ != target_id && (uint32_t)cached_mcp_id_ != my_id_) {
+            // 检查大模型是否还活着
+            if (header_->node_registered[cached_mcp_id_].load(std::memory_order_acquire)) {
+                // 神不知鬼不觉地申请一块新内存，把数据镜像复制一份丢给大模型！
+                do_push_to_queue(cached_mcp_id_);
+            } else {
+                cached_mcp_id_ = -1; // 大模型掉线了，清除缓存
+            }
         }
-        return true;
+
+        return success;
     }
 
     void internal_listen() {
@@ -150,9 +177,7 @@ protected:
                 header_->is_sleeping[my_id_].store(false, std::memory_order_release);
             }
 
-            if (!got_msg && header_->rx_queues[my_id_].pop(offset)) {
-                got_msg = true;
-            }
+            if (!got_msg && header_->rx_queues[my_id_].pop(offset)) got_msg = true;
 
             if (got_msg) {
                 EventData* event = local_cache_.get_ptr<EventData>(offset);
