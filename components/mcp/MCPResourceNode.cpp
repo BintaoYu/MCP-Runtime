@@ -21,7 +21,6 @@ void MCPResourceNode::init_bus_handler() {
 json MCPResourceNode::mcp_list_resources() {
     json resources = json::array();
     
-    // 【核心修复】：根据我们在 C++ 里的注册表直接宣告资源，不依赖是否已经收到数据
     for (const auto& [type_id, info] : type_parsers_) {
         resources.push_back({
             {"uri", "bus://types/" + info.resource_name + "/latest"},
@@ -39,13 +38,9 @@ json MCPResourceNode::mcp_read_resource(std::string_view uri) {
         return json{{"contents", json::array({{{"uri", std::string(uri)}, {"mimeType", "application/json"}, {"text", it->second.dump()}}})}};
     }
     
-    // 【防呆设计】：如果资源存在，但底层总线还没发来数据，温柔地告诉大模型在等待
     return json{{"contents", json::array({{{"uri", std::string(uri)}, {"mimeType", "application/json"}, {"text", "{\"status\": \"waiting_for_hardware_data\"}"}}})}};
 }
 
-// ----------------------------------------------------------------------------
-// Tools 逻辑保持不变
-// ----------------------------------------------------------------------------
 json MCPResourceNode::mcp_list_tools() {
     json tool_list = json::array();
     for (const auto& [name, info] : tools_) {

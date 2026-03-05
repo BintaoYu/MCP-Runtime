@@ -3,38 +3,31 @@
 
 namespace shm_bus {
 
-// ============================================================================
-// 全局内存池初始化实现
-// ============================================================================
 void init_global_pool(void* base_addr, std::size_t total_size, std::size_t data_offset) {
     if (total_size < data_offset + BLOCK_SIZE) {
         throw std::runtime_error("共享内存太小，装不下元数据！");
     }
     GlobalPoolState* pool = static_cast<GlobalPoolState*>(base_addr);
-    std::size_t available_size = total_size - data_offset; // 从 data_offset 开始算剩余空间
+    std::size_t available_size = total_size - data_offset; 
     pool->total_blocks = available_size / BLOCK_SIZE;
     pool->free_count.store(pool->total_blocks, std::memory_order_relaxed);
 
-    char* data_start = static_cast<char*>(base_addr) + data_offset; // 指向真实数据区
+    char* data_start = static_cast<char*>(base_addr) + data_offset; 
 
     for (std::size_t i = 0; i < pool->total_blocks - 1; ++i) {
         char* current_block_addr = data_start + (i * BLOCK_SIZE);
         FreeBlock* block = reinterpret_cast<FreeBlock*>(current_block_addr);
-        block->next_offset = data_offset + ((i + 1) * BLOCK_SIZE); // 使用 data_offset
+        block->next_offset = data_offset + ((i + 1) * BLOCK_SIZE); 
     }
     
     char* last_block_addr = data_start + ((pool->total_blocks - 1) * BLOCK_SIZE);
     reinterpret_cast<FreeBlock*>(last_block_addr)->next_offset = NULL_OFFSET;
 
     TaggedOffset initial_head;
-    initial_head.data.offset = data_offset; // 使用 data_offset
+    initial_head.data.offset = data_offset; 
     initial_head.data.tag = 0; 
     pool->head.store(initial_head.raw_value, std::memory_order_release);
 }
-
-// ============================================================================
-// ThreadLocalCache 成员函数实现
-// ============================================================================
 
 ThreadLocalCache::ThreadLocalCache(void* base_addr) 
     : base_addr_(base_addr), 
@@ -42,7 +35,6 @@ ThreadLocalCache::ThreadLocalCache(void* base_addr)
       local_head_(NULL_OFFSET),
       local_count_(0) {}
 
-// 【内存防泄漏核心补丁】：容器退出时，把手里没用完的块全还回去
 ThreadLocalCache::~ThreadLocalCache() {
     while (local_head_ != NULL_OFFSET) {
         return_to_global(); 
@@ -83,19 +75,15 @@ offset_t ThreadLocalCache::get_offset(void* ptr) {
     return static_cast<offset_t>(static_cast<char*>(ptr) - static_cast<char*>(base_addr_));
 }
 
-// ============================================================================
-// 底层 CAS 无锁进货/退货逻辑
-// ============================================================================
-
 void ThreadLocalCache::fetch_from_global() {
     TaggedOffset expected_head, new_head;
     do {
         expected_head.raw_value = global_pool_->head.load(std::memory_order_acquire);
-        if (expected_head.data.offset == NULL_OFFSET) return; // 全局池被掏空了
+        if (expected_head.data.offset == NULL_OFFSET) return; 
 
         FreeBlock* first_block = get_ptr<FreeBlock>(expected_head.data.offset);
         new_head.data.offset = first_block->next_offset;
-        new_head.data.tag = expected_head.data.tag + 1; // 防 ABA
+        new_head.data.tag = expected_head.data.tag + 1; 
     } while (!global_pool_->head.compare_exchange_weak(
                 expected_head.raw_value, new_head.raw_value,
                 std::memory_order_release, std::memory_order_relaxed));

@@ -34,7 +34,7 @@ struct LogEvent {
 // 共享内存绝对头部布局 (ShmHeader)
 // ============================================================================
 struct ShmHeader {
-    GlobalPoolState pool_state; // 保留你原有的分配器元数据
+    GlobalPoolState pool_state;
 
     std::atomic<bool> node_registered[MAX_NODES];
     std::atomic<bool> is_sleeping[MAX_NODES]; 
@@ -43,11 +43,10 @@ struct ShmHeader {
     pthread_mutex_t wake_mutexes[MAX_NODES];
     pthread_cond_t  wake_conds[MAX_NODES];
 
-    // 改回正确的类名 MPSCQueue
     MPSCQueue<offset_t, QUEUE_CAPACITY> rx_queues[MAX_NODES];
     MPSCQueue<LogEvent, QUEUE_CAPACITY> log_queues[MAX_NODES];
 
-    // 【架构升级】：Pub/Sub 订阅矩阵 (256个主题 x MAX_NODES个节点)
+    // Pub/Sub 订阅矩阵 (256个主题 x MAX_NODES个节点)
     std::atomic<bool> route_table[256][MAX_NODES];
 };
 

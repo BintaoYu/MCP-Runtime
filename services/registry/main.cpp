@@ -21,8 +21,8 @@ int main() {
 
     ShmHeader* header = new (base_addr) ShmHeader();
 
-    // 初始化你的全局内存池
-    init_global_pool(base_addr, sizeof(ShmHeader), SHM_SIZE);
+    // 【修复】：正确的传参顺序 (总大小在前，数据偏移量在后)
+    init_global_pool(base_addr, SHM_SIZE, sizeof(ShmHeader));
 
     for (uint32_t i = 0; i < MAX_NODES; ++i) {
         header->node_registered[i].store(false, std::memory_order_relaxed);

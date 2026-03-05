@@ -19,9 +19,6 @@ public:
         init_bus_handler();
     }
 
-    // ========================================================================
-    // Resources (被动状态投影)
-    // ========================================================================
     using ParserFunc = std::function<json(const EventData*)>;
     
     void register_type_parser(uint32_t type_id, std::string_view resource_name, ParserFunc parser) {
@@ -31,12 +28,8 @@ public:
     json mcp_list_resources();
     json mcp_read_resource(std::string_view uri);
 
-    // ========================================================================
-    // Tools (主动工具调用)
-    // ========================================================================
     using ToolHandler = std::function<json(const json& arguments)>;
     
-    // 注册一个供 LLM 调用的工具
     void register_tool(std::string_view name, std::string_view description, const json& input_schema, ToolHandler handler) {
         tools_[std::string(name)] = {std::string(description), input_schema, std::move(handler)};
     }

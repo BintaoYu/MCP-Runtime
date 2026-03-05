@@ -10,7 +10,7 @@
 #include <functional>
 #include <string_view>
 #include <atomic>
-#include <vector> // 引入 vector
+#include <vector> 
 
 #if defined(__x86_64__) || defined(_M_X64)
 #include <emmintrin.h> 
@@ -110,9 +110,6 @@ public:
         return -1; 
     }
 
-    // ========================================================================
-    // Pub/Sub API 改造
-    // ========================================================================
     void add_route(uint32_t msg_type, int target_id) {
         if (header_ && target_id >= 0 && target_id < MAX_NODES) {
             header_->route_table[msg_type % 256][target_id].store(true, std::memory_order_release);
@@ -138,11 +135,17 @@ public:
     }
 
 protected:
-    // 将底层推送提取出来
     [[nodiscard]] bool do_push_to_queue(uint32_t tid, uint32_t msg_type, const void* payload, size_t payload_len) {
         if (tid >= MAX_NODES || !header_->node_registered[tid].load(std::memory_order_acquire)) return false;
 
-        void* block = local_cache_.allocate();
+        void* block = nullptr;
+        try {
+            // 【健壮性补丁】：捕获 OOM 异常，宁可丢包绝不崩溃
+            block = local_cache_.allocate();
+        } catch (const std::bad_alloc&) {
+            return false;
+        }
+
         EventData* event = new (block) EventData();
         event->src_id = my_id_;
         event->msg_type = msg_type;
@@ -169,7 +172,6 @@ protected:
         }
         if (cached_mcp_id_ >= 0 && (uint32_t)cached_mcp_id_ != my_id_) {
             if (header_->node_registered[cached_mcp_id_].load(std::memory_order_acquire)) {
-                // 【核心修复】：强制转换为 (void) 告诉编译器“我确信不需要管嗅探失败的情况”，消除警告
                 (void)do_push_to_queue(cached_mcp_id_, msg_type, payload, payload_len);
             } else {
                 cached_mcp_id_ = -1; 
@@ -179,11 +181,10 @@ protected:
 
     [[nodiscard]] bool internal_send(uint32_t target_id, uint32_t msg_type, const void* payload, size_t payload_len) {
         bool success = do_push_to_queue(target_id, msg_type, payload, payload_len);
-        do_snoop(msg_type, payload, payload_len); // 点对点发送时也抄送大模型
+        do_snoop(msg_type, payload, payload_len); 
         return success;
     }
 
-    // 【核心多播发布】向矩阵中所有订阅者推送
     [[nodiscard]] bool internal_publish(uint32_t msg_type, const void* payload, size_t payload_len) {
         bool sent_any = false;
         if (header_) {
@@ -195,7 +196,7 @@ protected:
                 }
             }
         }
-        do_snoop(msg_type, payload, payload_len); // 大模型上帝视角抄送
+        do_snoop(msg_type, payload, payload_len); 
         return sent_any;
     }
 

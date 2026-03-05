@@ -8,11 +8,11 @@
 #include <memory>
 #include <sstream>
 #include <nlohmann/json.hpp>
+#include <csignal> // 【健壮性补丁】：引入信号处理头文件
 
 using namespace shm_bus;
 using json = nlohmann::json;
 
-// 【Warning修复 1】：放回完整的逻辑代码
 json read_latency_csv(int tail_lines) {
     std::string command = "tail -n " + std::to_string(tail_lines) + " p2p_latency_trace.csv 2>/dev/null";
     std::array<char, 128> buffer;
@@ -45,6 +45,9 @@ json read_latency_csv(int tail_lines) {
 }
 
 int main() {
+    // 【健壮性补丁】：忽略 SIGPIPE 信号，防止网页关闭/管道断开时 C++ 进程崩溃
+    std::signal(SIGPIPE, SIG_IGN);
+
     MCPResourceNode mcp_bridge;
 
     mcp_bridge.register_type_parser(TYPE_SENSOR_DATA, "SensorData", [](const EventData* event) -> json {
@@ -57,7 +60,6 @@ int main() {
         return json{{"speed_rpm", data->speed}, {"torque_nm", data->torque}, {"direction", data->direction}};
     });
 
-    // 【Warning修复 2】：使用 /*args*/ 注释掉未使用的参数
     mcp_bridge.register_tool(
         "get_bus_topology",
         "获取当前底层的 Pub/Sub 路由拓扑表，查看各主题有哪些节点正在订阅",
@@ -85,7 +87,6 @@ int main() {
         }
     );
 
-    // 【架构升级】：支持多播的 Connect / Disconnect
     mcp_bridge.register_tool(
         "update_bus_topology",
         "【全局网管】配置动态 Pub/Sub 路由表。动作支持：'connect'(接通) 或 'disconnect'(断开)。主题：1=SensorData, 2=MotorControl",
@@ -120,7 +121,6 @@ int main() {
         }
     );
 
-    // 保持下发控制的 Tool 
     mcp_bridge.register_tool(
         "set_motor_state", "强制下发控制指令",
         json{{"type", "object"}, {"properties", {{"speed", {{"type", "number"}}}, {"torque", {{"type", "number"}}}, {"direction", {{"type", "integer"}}}}}},
@@ -140,12 +140,17 @@ int main() {
     while (std::getline(std::cin, line)) {
         try {
             json req = json::parse(line);
-            if (!req.contains("method")) continue;
+            
+            // 【健壮性补丁】：防止非标准 JSON 对象导致程序崩溃
+            if (!req.is_object() || !req.contains("method")) continue;
+            
             bool is_request = req.contains("id");
             std::string method = req["method"];
             if (!is_request) continue; 
 
-            json res = {{"jsonrpc", "2.0"}, {"id", req["id"]}};
+            // 【健壮性补丁】：安全获取 id
+            json res = {{"jsonrpc", "2.0"}, {"id", req.value("id", json(nullptr))}};
+            
             if (method == "initialize") res["result"] = {{"protocolVersion", "2024-11-05"}, {"capabilities", {{"resources", json::object()}, {"tools", json::object()}}}, {"serverInfo", {{"name", "cxx-softbus-mcp"}, {"version", "1.0.0"}}}};
             else if (method == "ping") res["result"] = json::object(); 
             else if (method == "resources/list") res["result"] = mcp_bridge.mcp_list_resources();
@@ -153,8 +158,14 @@ int main() {
             else if (method == "tools/list") res["result"] = mcp_bridge.mcp_list_tools();
             else if (method == "tools/call") res["result"] = mcp_bridge.mcp_call_tool(req["params"]["name"].get<std::string>(), req["params"].value("arguments", json::object()));
             else res["error"] = {{"code", -32601}, {"message", "Method not found"}};
+            
             std::cout << res.dump() << std::endl;
-        } catch (...) {}
+        } catch (const std::exception& e) {
+            // 【健壮性补丁】：仅打印警告，绝不退出进程
+            std::cerr << "[Warning] Invalid MCP message dropped: " << e.what() << std::endl;
+        } catch (...) {
+            std::cerr << "[Warning] Unknown exception in MCP loop!" << std::endl;
+        }
     }
 
     mcp_bridge.stop(); 
