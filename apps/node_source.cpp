@@ -6,28 +6,21 @@
 using namespace shm_bus;
 
 int main() {
-    SourceNode controller("MainController");
+    SourceNode sensor("TempSensor"); 
     
-    std::cout << "[硬件] 正在寻找总线上的节点...\n";
-    int target_id = -1;
-    while ((target_id = controller.lookup_node("DashboardUI", TYPE_ID(MotorControl))) < 0) {
-        usleep(100000); 
-    }
-    std::cout << "[硬件] 寻址成功！仪表盘节点 ID: " << target_id << "\n";
-
-    MotorControl cmd = {1500.5f, 30.2f, 1};
-
+    std::cout << "[节点A] 温度传感器已上线！只负责输出数据 (Type: 1)\n";
+    SensorData data = {25.0f, 50.0f};
+ 
     while (true) {
-        // 【极度纯净】业务代码完全剥离 MCP 的侵入，只负责给自己真正的业务目标发指令！
-        if (!controller.emit(target_id, TYPE_ID(MotorControl), &cmd, sizeof(cmd))) {
-            std::cerr << "[硬件] 发送指令失败：目标节点队列已满。\n";
-        }
+        // 完全不关心发给谁，向总线抛出 TYPE_SENSOR_DATA
+        bool routed = sensor.publish(TYPE_SENSOR_DATA, &data, sizeof(data));
         
-        cmd.speed += 0.5f;
-        if (cmd.speed > 1600.0f) cmd.speed = 1500.0f;
+        if (routed) std::cout << "." << std::flush;
+        else std::cout << "x" << std::flush;
 
+        data.temperature += 0.5f;
+        if (data.temperature > 100.0f) data.temperature = 25.0f;
         usleep(1000000); 
     }
-    
     return 0;
 }

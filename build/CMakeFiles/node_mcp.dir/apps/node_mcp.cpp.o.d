@@ -306,7 +306,7 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
  /usr/include/x86_64-linux-gnu/bits/unistd.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /usr/include/linux/close_range.h \
+ /usr/include/linux/close_range.h /usr/include/c++/11/atomic \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
@@ -315,7 +315,6 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
  /home/ubuntu/.ssh/softbus/components/common/shm_layout.h \
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h \
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h \
- /usr/include/c++/11/atomic \
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h \
  /home/ubuntu/.ssh/softbus/apps/business_types.h \
  /usr/include/c++/11/thread /usr/include/c++/11/bits/std_thread.h \

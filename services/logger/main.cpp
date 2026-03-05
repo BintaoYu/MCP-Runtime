@@ -25,7 +25,6 @@ int main() {
     std::cout << "=== P2P 旁路监控服务 (轻量服务器模式) ===\n";
 
     long num_cores = sysconf(_SC_NPROCESSORS_ONLN);
-    // 【核心修复 1】只有在 4 核及以上机器才进行物理绑核，防止 2 核小鸡卡死
     if (num_cores >= 4) {
         pin_to_core(num_cores - 1); 
     } else {
@@ -51,7 +50,8 @@ int main() {
     while (true) {
         bool idle = true;
         
-        for (int i = 0; i < MAX_NODES; ++i) {
+        // 【核心修复】：将 int 改为 uint32_t，彻底消除 Warning
+        for (uint32_t i = 0; i < MAX_NODES; ++i) {
             while (header->log_queues[i].pop(log_ev)) {
                 idle = false;
                 csv_file << log_ev.src_id << "," << log_ev.dst_id << "," << log_ev.latency_ns << "\n";
@@ -59,15 +59,13 @@ int main() {
             }
         }
 
-        if (flush_counter >= 10000) { // 降低刷盘阈值
+        if (flush_counter >= 10000) { 
             csv_file.flush();
             flush_counter = 0;
         }
 
         if (idle) {
-            // 【核心修复 2】休眠 10 毫秒！极大降低 CPU 负载！
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            
             if (flush_counter > 0) {
                 csv_file.flush();
                 flush_counter = 0;

@@ -209,69 +209,22 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
   /usr/include/x86_64-linux-gnu/bits/unistd.h \
   /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
   /usr/include/linux/close_range.h \
-  /usr/include/c++/11/csignal \
-  /usr/include/signal.h \
-  /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
-  /usr/include/x86_64-linux-gnu/bits/signum-arch.h \
-  /usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h \
-  /usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h \
-  /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
-  /usr/include/x86_64-linux-gnu/bits/siginfo-arch.h \
-  /usr/include/x86_64-linux-gnu/bits/siginfo-consts.h \
-  /usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h \
-  /usr/include/x86_64-linux-gnu/bits/types/sigval_t.h \
-  /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
-  /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h \
-  /usr/include/x86_64-linux-gnu/bits/sigaction.h \
-  /usr/include/x86_64-linux-gnu/bits/sigcontext.h \
-  /usr/include/x86_64-linux-gnu/bits/types/stack_t.h \
-  /usr/include/x86_64-linux-gnu/sys/ucontext.h \
-  /usr/include/x86_64-linux-gnu/bits/sigstack.h \
-  /usr/include/x86_64-linux-gnu/bits/sigstksz.h \
-  /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
-  /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
-  /usr/include/x86_64-linux-gnu/bits/sigthread.h \
-  /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
   /usr/include/c++/11/cstring \
   /usr/include/string.h \
   /usr/include/strings.h \
   /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
   ../components/common/shm_layout.h \
-  ../components/common/shm_types.h \
-  /usr/include/c++/11/cstddef \
-  ../components/allocator/shm_allocator.h \
   /usr/include/c++/11/atomic \
   /usr/include/c++/11/bits/atomic_base.h \
   /usr/include/c++/11/bits/atomic_lockfree_defines.h \
+  ../components/common/shm_types.h \
+  /usr/include/c++/11/cstddef \
+  ../components/allocator/shm_allocator.h \
   ../components/mpsc_queue/lockfree_mpsc.h
 
 
 /usr/include/c++/11/cstring:
-
-/usr/include/x86_64-linux-gnu/bits/signal_ext.h:
-
-/usr/include/x86_64-linux-gnu/bits/sigthread.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h:
-
-/usr/include/x86_64-linux-gnu/bits/sigstksz.h:
-
-/usr/include/x86_64-linux-gnu/bits/sigstack.h:
-
-/usr/include/x86_64-linux-gnu/sys/ucontext.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/stack_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigval_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/signum-arch.h:
 
 /usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
 
@@ -294,8 +247,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 /usr/include/fcntl.h:
 
 /usr/include/c++/11/bits/istream.tcc:
-
-/usr/include/c++/11/csignal:
 
 /usr/include/c++/11/istream:
 
@@ -321,8 +272,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 
 /usr/include/c++/11/bits/locale_classes.tcc:
 
-/usr/include/x86_64-linux-gnu/bits/sigaction.h:
-
 /usr/include/c++/11/bits/basic_string.tcc:
 
 /usr/include/c++/11/bits/charconv.h:
@@ -336,8 +285,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 /usr/include/wctype.h:
 
 /usr/include/x86_64-linux-gnu/bits/errno.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h:
 
 /usr/include/errno.h:
 
@@ -365,13 +312,9 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 
 /usr/include/x86_64-linux-gnu/bits/select2.h:
 
-/usr/include/x86_64-linux-gnu/bits/ss_flags.h:
-
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
-
-/usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h:
 
 /usr/include/x86_64-linux-gnu/bits/byteswap.h:
 
@@ -390,8 +333,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 /usr/include/c++/11/bits/stl_iterator_base_funcs.h:
 
 /usr/include/ctype.h:
-
-/usr/include/x86_64-linux-gnu/bits/siginfo-consts.h:
 
 /usr/include/x86_64-linux-gnu/bits/stat.h:
 
@@ -469,8 +410,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 
 /usr/include/c++/11/ostream:
 
-/usr/include/x86_64-linux-gnu/bits/siginfo-arch.h:
-
 /usr/include/x86_64-linux-gnu/bits/confname.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h:
@@ -504,8 +443,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 /usr/include/c++/11/pstl/pstl_config.h:
 
 /usr/include/x86_64-linux-gnu/sys/single_threaded.h:
-
-/usr/include/signal.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
@@ -609,8 +546,6 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
-/usr/include/x86_64-linux-gnu/bits/sigevent-consts.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
 /usr/include/c++/11/new:
@@ -691,13 +626,9 @@ CMakeFiles/shm_registry.dir/services/registry/main.cpp.o: ../services/registry/m
 
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
-/usr/include/x86_64-linux-gnu/bits/signum-generic.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
-
-/usr/include/x86_64-linux-gnu/bits/sigcontext.h:
 
 /usr/include/x86_64-linux-gnu/bits/mman-shared.h:
 

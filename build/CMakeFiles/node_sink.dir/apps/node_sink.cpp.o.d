@@ -197,7 +197,9 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/stl_tempbuf.h \
- /usr/include/c++/11/bits/uniform_int_dist.h \
+ /usr/include/c++/11/bits/uniform_int_dist.h /usr/include/c++/11/atomic \
+ /usr/include/c++/11/bits/atomic_base.h \
+ /usr/include/c++/11/bits/atomic_lockfree_defines.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
@@ -207,7 +209,5 @@ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o: \
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h \
  /usr/include/c++/11/cstddef \
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h \
- /usr/include/c++/11/atomic /usr/include/c++/11/bits/atomic_base.h \
- /usr/include/c++/11/bits/atomic_lockfree_defines.h \
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h \
  /home/ubuntu/.ssh/softbus/apps/business_types.h

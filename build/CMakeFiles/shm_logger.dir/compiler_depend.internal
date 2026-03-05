@@ -249,9 +249,9 @@ CMakeFiles/shm_logger.dir/services/logger/main.cpp.o
  /usr/include/c++/11/pstl/glue_memory_defs.h
  /usr/include/c++/11/pstl/execution_defs.h
  /home/ubuntu/.ssh/softbus/components/common/shm_layout.h
+ /usr/include/c++/11/atomic
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h
  /usr/include/c++/11/cstddef
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h
- /usr/include/c++/11/atomic
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h
 

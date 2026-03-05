@@ -307,7 +307,7 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
  /usr/include/x86_64-linux-gnu/bits/unistd.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /usr/include/linux/close_range.h \
+ /usr/include/linux/close_range.h /usr/include/c++/11/atomic \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
@@ -316,6 +316,5 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: \
  /home/ubuntu/.ssh/softbus/components/common/shm_layout.h \
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h \
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h \
- /usr/include/c++/11/atomic \
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h \
  /usr/include/c++/11/mutex /usr/include/c++/11/bits/unique_lock.h

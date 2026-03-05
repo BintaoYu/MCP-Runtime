@@ -41,20 +41,24 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-echo "   -> [1/4] 启动注册中心 (Registry)..."
+echo "   -> [1/5] 启动注册中心 (Registry)..."
 $BUILD_DIR/shm_registry > /dev/null 2>&1 &
 REGISTRY_PID=$!
 sleep 0.5 
 
-echo "   -> [2/4] 启动旁路监控 (Logger)..."
+echo "   -> [2/5] 启动旁路监控 (Logger)..."
 $BUILD_DIR/shm_logger > /dev/null 2>&1 &
 LOGGER_PID=$!
 
-echo "   -> [3/4] 启动温度传感器 (Source)..."
+echo "   -> [3/5] 启动节点A：温度传感器 (Source)..."
 $BUILD_DIR/node_source > /dev/null 2>&1 &
 SOURCE_PID=$!
 
-echo "   -> [4/4] 启动电机控制器 (Sink) - 留有屏幕输出..."
+echo "   -> [4/5] 启动节点B：AI控制器 (Normal)..."
+$BUILD_DIR/node_normal &
+NORMAL_PID=$!
+
+echo "   -> [5/5] 启动节点C：仪表盘 (Sink)..."
 $BUILD_DIR/node_sink &
 SINK_PID=$!
 sleep 0.5

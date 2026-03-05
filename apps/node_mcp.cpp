@@ -12,7 +12,7 @@
 using namespace shm_bus;
 using json = nlohmann::json;
 
-// 业务层辅助函数：读取 CSV
+// 【Warning修复 1】：放回完整的逻辑代码
 json read_latency_csv(int tail_lines) {
     std::string command = "tail -n " + std::to_string(tail_lines) + " p2p_latency_trace.csv 2>/dev/null";
     std::array<char, 128> buffer;
@@ -47,135 +47,117 @@ json read_latency_csv(int tail_lines) {
 int main() {
     MCPResourceNode mcp_bridge;
 
-    // ========================================================================
-    // 能力 1：注册只读状态 (Resource)
-    // ========================================================================
-    mcp_bridge.register_type_parser(
-        TYPE_ID(MotorControl), "MotorControl", 
-        [](const EventData* event) -> json {
-            const auto* data = reinterpret_cast<const MotorControl*>(event->payload);
-            return json{
-                {"speed_rpm", data->speed},
-                {"torque_nm", data->torque},
-                {"direction", data->direction == 1 ? "Forward" : "Reverse"},
-                {"timestamp_ns", event->timestamp}
-            };
+    mcp_bridge.register_type_parser(TYPE_SENSOR_DATA, "SensorData", [](const EventData* event) -> json {
+        const auto* data = reinterpret_cast<const SensorData*>(event->payload);
+        return json{{"temperature_c", data->temperature}, {"humidity_percent", data->humidity}};
+    });
+
+    mcp_bridge.register_type_parser(TYPE_MOTOR_CONTROL, "MotorControl", [](const EventData* event) -> json {
+        const auto* data = reinterpret_cast<const MotorControl*>(event->payload);
+        return json{{"speed_rpm", data->speed}, {"torque_nm", data->torque}, {"direction", data->direction}};
+    });
+
+    // 【Warning修复 2】：使用 /*args*/ 注释掉未使用的参数
+    mcp_bridge.register_tool(
+        "get_bus_topology",
+        "获取当前底层的 Pub/Sub 路由拓扑表，查看各主题有哪些节点正在订阅",
+        json{{"type", "object"}, {"properties", json::object()}},
+        [&mcp_bridge](const json& /*args*/) -> json {
+            json routes = json::array();
+            for (int msg_type = 0; msg_type < 256; ++msg_type) {
+                std::vector<int> subscribers = mcp_bridge.get_routes(msg_type);
+                if (!subscribers.empty()) {
+                    json subs_json = json::array();
+                    for (int tid : subscribers) {
+                        subs_json.push_back({
+                            {"target_node_id", tid},
+                            {"target_node_name", mcp_bridge.get_node_name(tid)}
+                        });
+                    }
+                    routes.push_back({
+                        {"msg_type", msg_type},
+                        {"subscribers", subs_json}
+                    });
+                }
+            }
+            if (routes.empty()) return {{"content", json::array({{{"type", "text"}, {"text", "当前路由表为空，没有任何节点产生订阅。"}}})}};
+            return {{"content", json::array({{{"type", "text"}, {"text", routes.dump(2)}}})}};
         }
     );
 
-    // ========================================================================
-    // 能力 2：注册系统诊断能力 
-    // ========================================================================
+    // 【架构升级】：支持多播的 Connect / Disconnect
     mcp_bridge.register_tool(
-        "check_latency",
-        "检查底层 P2P 共享内存总线的通信延迟，用于诊断系统是否拥塞",
+        "update_bus_topology",
+        "【全局网管】配置动态 Pub/Sub 路由表。动作支持：'connect'(接通) 或 'disconnect'(断开)。主题：1=SensorData, 2=MotorControl",
         json{
             {"type", "object"},
             {"properties", {
-                {"lines", {
-                    {"type", "integer"}, 
-                    {"description", "需要读取的最新记录行数，默认50"}
-                }}
-            }}
-        },
-        [](const json& args) -> json {
-            int lines = args.value("lines", 50);
-            json stats = read_latency_csv(lines);
-            // 严格遵循 MCP 规范：内容必须是 array 包裹的对象
-            return {{"content", json::array({{{"type", "text"}, {"text", stats.dump(2)}}})}};
-        }
-    );
-
-    // ========================================================================
-    // 能力 3：注册物理控制能力
-    // ========================================================================
-    mcp_bridge.register_tool(
-        "set_motor_state",
-        "下发控制指令，调整物理电机的运行参数",
-        json{
-            {"type", "object"},
-            {"properties", {
-                {"speed", {{"type", "number"}, {"description", "电机转速 (RPM)"}}},
-                {"torque", {{"type", "number"}, {"description", "电机扭矩 (Nm)"}}},
-                {"direction", {{"type", "integer"}, {"description", "1为正转，-1为反转"}}}
+                {"action", {{"type", "string"}, {"description", "操作: 'connect' 或 'disconnect'"}}},
+                {"msg_type", {{"type", "integer"}, {"description", "数据类型ID"}}},
+                {"target_node_name", {{"type", "string"}, {"description", "操作的目标节点名称"}}}
             }},
-            {"required", json::array({"speed", "torque", "direction"})}
+            {"required", json::array({"action", "msg_type", "target_node_name"})}
         },
         [&mcp_bridge](const json& args) -> json {
-            MotorControl cmd;
-            cmd.speed = args.value("speed", 0.0f);
-            cmd.torque = args.value("torque", 0.0f);
-            cmd.direction = args.value("direction", 1);
+            std::string action = args.value("action", "connect");
+            int msg_type = args.value("msg_type", -1);
+            std::string target_name = args.value("target_node_name", "");
+            
+            if (msg_type < 0 || msg_type > 255) return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "非法的 msg_type"}}})}};
+            
+            int target_id = mcp_bridge.lookup_node(target_name, msg_type);
+            if (target_id < 0) return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "路由失败：目标离线或期望的数据类型不匹配！"}}})}};
 
-            int target_id = mcp_bridge.lookup_node("DashboardUI", TYPE_ID(MotorControl));
-            if (target_id < 0) {
-                return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "发送失败：目标控制节点离线或不存在"}}})}};
-            }
-
-            if (mcp_bridge.forward(target_id, TYPE_ID(MotorControl), &cmd, sizeof(cmd))) {
-                return {{"content", json::array({{{"type", "text"}, {"text", "硬件指令已成功下发至软总线！"}}})}};
+            if (action == "connect") {
+                mcp_bridge.add_route(msg_type, target_id);
+                return {{"content", json::array({{{"type", "text"}, {"text", "🔗 节点 [" + target_name + "] 成功订阅了 Topic: " + std::to_string(msg_type)}}})}};
+            } else if (action == "disconnect") {
+                mcp_bridge.remove_route(msg_type, target_id);
+                return {{"content", json::array({{{"type", "text"}, {"text", "✂️ 节点 [" + target_name + "] 成功退订了 Topic: " + std::to_string(msg_type)}}})}};
             } else {
-                return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "发送失败：总线队列拥塞"}}})}};
+                return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "非法的 action"}}})}};
             }
         }
     );
 
-    // ========================================================================
-    // 启动 JSON-RPC 守护引擎
-    // ========================================================================
+    // 保持下发控制的 Tool 
+    mcp_bridge.register_tool(
+        "set_motor_state", "强制下发控制指令",
+        json{{"type", "object"}, {"properties", {{"speed", {{"type", "number"}}}, {"torque", {{"type", "number"}}}, {"direction", {{"type", "integer"}}}}}},
+        [&mcp_bridge](const json& args) -> json {
+            MotorControl cmd{args.value("speed", 0.0f), args.value("torque", 0.0f), args.value("direction", 1)};
+            int target_id = mcp_bridge.lookup_node("DashboardUI", TYPE_MOTOR_CONTROL);
+            if (target_id >= 0 && mcp_bridge.forward(target_id, TYPE_MOTOR_CONTROL, &cmd, sizeof(cmd))) {
+                return {{"content", json::array({{{"type", "text"}, {"text", "指令已成功下发！"}}})}};
+            }
+            return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "发送失败"}}})}};
+        }
+    );
+
     std::thread bus_thread([&mcp_bridge]() { mcp_bridge.run(); });
-    bus_thread.detach(); 
 
     std::string line;
     while (std::getline(std::cin, line)) {
         try {
             json req = json::parse(line);
             if (!req.contains("method")) continue;
-
             bool is_request = req.contains("id");
             std::string method = req["method"];
-
-            // 【核心修复 1】如果这是一条通知（例如 notifications/initialized），绝对不能回复！直接跳过！
-            if (!is_request) {
-                continue; 
-            }
+            if (!is_request) continue; 
 
             json res = {{"jsonrpc", "2.0"}, {"id", req["id"]}};
-            
-            if (method == "initialize") {
-                res["result"] = {
-                    {"protocolVersion", "2024-11-05"},
-                    {"capabilities", {{"resources", json::object()}, {"tools", json::object()}}},
-                    {"serverInfo", {{"name", "cxx-softbus-mcp"}, {"version", "1.0.0"}}}
-                };
-            } 
-            // 【核心修复 2】必须响应 ping心跳！否则新版网页端会直接罢工白屏
-            else if (method == "ping") {
-                res["result"] = json::object(); 
-            }
-            else if (method == "resources/list") {
-                res["result"] = mcp_bridge.mcp_list_resources();
-            }
-            else if (method == "resources/read") {
-                res["result"] = mcp_bridge.mcp_read_resource(req["params"]["uri"].get<std::string>());
-            }
-            else if (method == "tools/list") {
-                res["result"] = mcp_bridge.mcp_list_tools();
-            }
-            else if (method == "tools/call") {
-                std::string name = req["params"]["name"];
-                json arguments = req["params"].value("arguments", json::object());
-                res["result"] = mcp_bridge.mcp_call_tool(name, arguments);
-            }
-            else {
-                res["error"] = {{"code", -32601}, {"message", "Method not found"}};
-            }
-
+            if (method == "initialize") res["result"] = {{"protocolVersion", "2024-11-05"}, {"capabilities", {{"resources", json::object()}, {"tools", json::object()}}}, {"serverInfo", {{"name", "cxx-softbus-mcp"}, {"version", "1.0.0"}}}};
+            else if (method == "ping") res["result"] = json::object(); 
+            else if (method == "resources/list") res["result"] = mcp_bridge.mcp_list_resources();
+            else if (method == "resources/read") res["result"] = mcp_bridge.mcp_read_resource(req["params"]["uri"].get<std::string>());
+            else if (method == "tools/list") res["result"] = mcp_bridge.mcp_list_tools();
+            else if (method == "tools/call") res["result"] = mcp_bridge.mcp_call_tool(req["params"]["name"].get<std::string>(), req["params"].value("arguments", json::object()));
+            else res["error"] = {{"code", -32601}, {"message", "Method not found"}};
             std::cout << res.dump() << std::endl;
-        } catch (...) {
-            // JSON 解析失败时静默，防止输出脏文本导致通信通道污染
-        }
+        } catch (...) {}
     }
 
+    mcp_bridge.stop(); 
+    if (bus_thread.joinable()) bus_thread.join(); 
     return 0;
 }

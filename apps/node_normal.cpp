@@ -1,34 +1,31 @@
-#include <iostream>
-#include <string>
 #include "framework/softbus_node.h"
 #include "business_types.h"
+#include <iostream>
+
 using namespace shm_bus;
 
 int main() {
-    // 1. 上线并注册名称
-    NormalNode filter("FilterLogic"); 
-    
-    // 2. 寻址：找下游的 Dashboard 在哪里
-    int target_id = -1;
-    while (target_id == -1) {
-        target_id = filter.lookup_node("DashboardUI", TYPE_ID(MotorControl));
-        if (target_id == -1 || target_id == -2) {
-            if (target_id == -1)
-                std::cout << "等待 DashboardUI 上线...\n";
-            else
-                std::cout << "DashboardUI类型不匹配\n";
-            usleep(500000); // 找不到就等半秒再查
-        }
-    }
+    NormalNode processor("AI_Controller", TYPE_SENSOR_DATA);
+    std::cout << "[节点B] AI 控制器已上线！等待接收温度数据...\n";
 
-    std::cout << "已找到 DashboardUI，其底层 ID 为: " << target_id << "\n";
+    processor.set_handler([&processor](NormalNode* self, const EventData* event) {
+        const auto* sensor = reinterpret_cast<const SensorData*>(event->payload);
+        
+        MotorControl cmd;
+        cmd.speed = sensor->temperature * 50.0f; 
+        cmd.torque = 10.5f;
+        cmd.direction = 1;
 
-    // 3. 注入业务并转发
-    filter.set_handler([target_id](NormalNode* self, const EventData* event) {
-        std::string processed = std::string(event->payload) + " -> [Filtered]";
-        if (!self->forward(target_id, 200, processed.c_str(), processed.size() + 1)) {
-            std::cerr << "[Normal] 转发失败：下游节点异常。\n";
+        std::cout << "\n [AI大脑] 收到温度: " << sensor->temperature 
+                  << "℃ -> 计算出电机转速: " << cmd.speed << " RPM. 正在向外盲发指令...";
+
+        // 【核心修复】：规范接收 [[nodiscard]] 的返回值，并增加状态提示
+        bool routed = self->publish(TYPE_MOTOR_CONTROL, &cmd, sizeof(cmd));
+        if (!routed) {
+            std::cout << " (提示: 链路断开，数据落入黑洞)";
         }
     });
-    filter.run(); 
+
+    processor.run();
+    return 0;
 }

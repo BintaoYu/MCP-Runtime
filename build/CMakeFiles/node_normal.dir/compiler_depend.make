@@ -3,6 +3,7 @@
 
 CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
   /usr/include/stdc-predef.h \
+  ../components/framework/softbus_node.h \
   /usr/include/c++/11/iostream \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -187,7 +188,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
   /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc \
-  ../components/framework/softbus_node.h \
   /usr/include/fcntl.h \
   /usr/include/x86_64-linux-gnu/bits/fcntl.h \
   /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
@@ -247,6 +247,9 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
   /usr/include/c++/11/bits/stl_heap.h \
   /usr/include/c++/11/bits/stl_tempbuf.h \
   /usr/include/c++/11/bits/uniform_int_dist.h \
+  /usr/include/c++/11/atomic \
+  /usr/include/c++/11/bits/atomic_base.h \
+  /usr/include/c++/11/bits/atomic_lockfree_defines.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
@@ -256,9 +259,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
   ../components/common/shm_types.h \
   /usr/include/c++/11/cstddef \
   ../components/allocator/shm_allocator.h \
-  /usr/include/c++/11/atomic \
-  /usr/include/c++/11/bits/atomic_base.h \
-  /usr/include/c++/11/bits/atomic_lockfree_defines.h \
   ../components/mpsc_queue/lockfree_mpsc.h \
   ../apps/business_types.h
 
@@ -266,10 +266,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 ../apps/business_types.h:
 
 ../components/mpsc_queue/lockfree_mpsc.h:
-
-/usr/include/c++/11/bits/atomic_lockfree_defines.h:
-
-/usr/include/c++/11/bits/stl_construct.h:
 
 /usr/include/c++/11/bits/cxxabi_forced.h:
 
@@ -355,6 +351,8 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 
 /usr/include/c++/11/new:
 
+/usr/include/linux/close_range.h:
+
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
@@ -364,6 +362,10 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 /usr/include/c++/11/bits/cxxabi_init_exception.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/c++/11/debug/assertions.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
 
 /usr/include/x86_64-linux-gnu/bits/fcntl2.h:
 
@@ -407,18 +409,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/fcntl.h:
 
-/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
-/usr/include/c++/11/iostream:
-
-/usr/include/c++/11/bits/node_handle.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
-/usr/include/c++/11/ctime:
-
-/usr/include/c++/11/ext/type_traits.h:
-
 /usr/include/c++/11/ext/numeric_traits.h:
 
 /usr/include/c++/11/bits/atomic_base.h:
@@ -447,6 +437,18 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 
 /usr/include/c++/11/functional:
 
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/c++/11/iostream:
+
+/usr/include/c++/11/bits/node_handle.h:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/c++/11/ctime:
+
+/usr/include/c++/11/ext/type_traits.h:
+
 /usr/include/stdc-predef.h:
 
 /usr/include/c++/11/bits/alloc_traits.h:
@@ -460,12 +462,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
-
-/usr/include/c++/11/debug/assertions.h:
-
-/usr/include/linux/close_range.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
@@ -575,6 +571,8 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 
 /usr/include/c++/11/bits/stl_iterator_base_funcs.h:
 
+/usr/include/c++/11/bits/stl_construct.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
@@ -674,6 +672,8 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o: ../apps/node_normal.cpp \
 /usr/include/string.h:
 
 /usr/include/c++/11/bits/streambuf.tcc:
+
+/usr/include/c++/11/bits/atomic_lockfree_defines.h:
 
 /usr/include/c++/11/bits/uniform_int_dist.h:
 

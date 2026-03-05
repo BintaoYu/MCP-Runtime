@@ -4,6 +4,7 @@
 CMakeFiles/node_normal.dir/apps/node_normal.cpp.o
  /home/ubuntu/.ssh/softbus/apps/node_normal.cpp
  /usr/include/stdc-predef.h
+ /home/ubuntu/.ssh/softbus/components/framework/softbus_node.h
  /usr/include/c++/11/iostream
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h
@@ -188,7 +189,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o
  /usr/include/c++/11/bits/ostream.tcc
  /usr/include/c++/11/istream
  /usr/include/c++/11/bits/istream.tcc
- /home/ubuntu/.ssh/softbus/components/framework/softbus_node.h
  /usr/include/fcntl.h
  /usr/include/x86_64-linux-gnu/bits/fcntl.h
  /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h
@@ -248,6 +248,9 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o
  /usr/include/c++/11/bits/stl_heap.h
  /usr/include/c++/11/bits/stl_tempbuf.h
  /usr/include/c++/11/bits/uniform_int_dist.h
+ /usr/include/c++/11/atomic
+ /usr/include/c++/11/bits/atomic_base.h
+ /usr/include/c++/11/bits/atomic_lockfree_defines.h
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h
  /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h
@@ -257,9 +260,6 @@ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h
  /usr/include/c++/11/cstddef
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h
- /usr/include/c++/11/atomic
- /usr/include/c++/11/bits/atomic_base.h
- /usr/include/c++/11/bits/atomic_lockfree_defines.h
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h
  /home/ubuntu/.ssh/softbus/apps/business_types.h
 

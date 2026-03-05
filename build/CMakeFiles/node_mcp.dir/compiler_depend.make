@@ -375,6 +375,7 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: ../apps/node_mcp.cpp \
   /usr/include/x86_64-linux-gnu/bits/unistd.h \
   /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
   /usr/include/linux/close_range.h \
+  /usr/include/c++/11/atomic \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
@@ -383,7 +384,6 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: ../apps/node_mcp.cpp \
   ../components/common/shm_layout.h \
   ../components/common/shm_types.h \
   ../components/allocator/shm_allocator.h \
-  /usr/include/c++/11/atomic \
   ../components/mpsc_queue/lockfree_mpsc.h \
   ../apps/business_types.h \
   /usr/include/c++/11/thread \
@@ -764,6 +764,7 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/
   /usr/include/x86_64-linux-gnu/bits/unistd.h \
   /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
   /usr/include/linux/close_range.h \
+  /usr/include/c++/11/atomic \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
@@ -772,7 +773,6 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/
   ../components/common/shm_layout.h \
   ../components/common/shm_types.h \
   ../components/allocator/shm_allocator.h \
-  /usr/include/c++/11/atomic \
   ../components/mpsc_queue/lockfree_mpsc.h \
   /usr/include/c++/11/mutex \
   /usr/include/c++/11/bits/unique_lock.h
@@ -784,8 +784,6 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/
 
 ../components/mpsc_queue/lockfree_mpsc.h:
 
-/usr/include/c++/11/atomic:
-
 ../components/common/shm_layout.h:
 
 /usr/include/c++/11/stdlib.h:
@@ -795,6 +793,8 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/
 /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h:
+
+/usr/include/c++/11/atomic:
 
 /usr/include/linux/close_range.h:
 
