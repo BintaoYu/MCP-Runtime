@@ -1,1 +1,123 @@
-usage:
+# 🚀 C++ SoftBus & MCP Server
+
+本项目是一个基于 **C++17** 和 **共享内存 (Shared Memory)** 构建的工业级、超低延迟的进程间通信（IPC）软总线框架。
+集成了 **大模型上下文协议 (Model Context Protocol, MCP)**，使得 LLM（如 Claude / Gemini）能够像 SDN（软件定义网络）控制器一样，以“上帝视角”观测总线数据，并动态编排底层物理硬件的数据流。
+
+
+---
+
+## 🏗️ 架构概览
+
+系统分为三个核心平面：
+
+1. **控制面 (Registry)**：守护进程 `shm_registry` 负责申请物理内存（默认 256MB），并使用 `placement new` 初始化全局内存池和路由矩阵。
+2. **数据面 (Nodes)**：业务进程继承 `SoftBusNode`（提供 `SourceNode`, `NormalNode`, `SinkNode`）。基于 **位掩码 (Bitmask)** 实现多播路由分发。
+3. **监控/AI 面 (MCP Server)**：`node_mcp` 桥接大模型，注册各类传感器 Resource 和控制 Tool。
+---
+
+## 🛠️ 编译与安装
+
+### 环境依赖
+
+* C++17 兼容的编译器 (GCC 8+ / Clang)
+* CMake 3.10+
+* Linux 环境 (依赖 `pthread` 和 `rt` 库)
+* [nlohmann/json](https://github.com/nlohmann/json) (已在代码中引用)
+
+### 编译指令
+
+```bash
+mkdir build && cd build
+cmake ..
+make
+
+```
+
+---
+
+## 启动
+
+### 快速启动
+
+```bash
+./start_env.sh
+```
+
+参考命令行输出运行mcp server
+```bash
+npx @modelcontextprotocol/inspector ./build/node_mcp 
+
+```
+
+---
+
+## 🤖 MCP 能力清单 (供 LLM 调用)
+
+挂载本 MCP Server 后，大模型将自动获得以下能力：
+
+### 🛠️ Tools (主动干预)
+
+* `get_bus_topology`: 获取当前底层的 Pub/Sub 路由拓扑表，查看各主题有哪些节点正在订阅。
+* `update_bus_topology`: 【全局网管】配置动态 Pub/Sub 路由表，支持动态接通 (`connect`) 或断开 (`disconnect`) 节点的 Topic 订阅。
+* `set_motor_state`: 强制 AI 越权接管，直接向底层下发电机控制指令 (speed, torque, direction)。
+
+### 📖 Resources (状态观测)
+
+* `bus://types/SensorData/latest`: 读取温度、湿度等传感器的最新一帧实时快照。
+* `bus://types/MotorControl/latest`: 读取当前电机的实时转速、扭矩等运行状态。
+
+---
+
+## 💻 开发者 API (C++ 侧)
+
+通过继承极简的接口，5分钟即可将你的 C++ 算法接入软总线：
+
+**发布数据 (SourceNode)**
+
+```cpp
+#include "framework/softbus_node.h"
+
+int main() {
+    shm_bus::SourceNode sensor("TempSensor");
+    SensorData data{25.5f, 60.0f};
+    
+    // 向类型为 1 (SensorData) 的 Topic 发布数据
+    sensor.publish(1, &data, sizeof(data)); 
+    return 0;
+}
+
+```
+
+**订阅处理数据 (SinkNode)**
+
+```cpp
+#include "framework/softbus_node.h"
+
+int main() {
+    shm_bus::SinkNode motor("MotorController", 2); // 期望接收类型 2
+    
+    motor.set_handler([](const shm_bus::EventData* event) {
+        auto* cmd = reinterpret_cast<const MotorControl*>(event->payload);
+        std::cout << "收到速度指令: " << cmd->speed << " RPM\n";
+    });
+    
+    motor.run(); // 进入无锁轮询 & 条件变量休眠的极速监听循环
+    return 0;
+}
+
+```
+
+---
+
+## ⚠️ 常见问题 (FAQ)
+
+1. **启动报 "共享内存太小，装不下元数据"？**
+请检查系统中是否残留了上一次崩溃遗留的同名共享内存。可以使用 `rm /dev/shm/p2p_bus_shm` 清理后重试。
+2. **大模型侧报错 "Broken Pipe" 或 C++ 节点神秘崩溃？**
+在最新版本中我们已拦截了 `SIGPIPE` 信号并加强了 JSON 解析防御。请确保拉取了最新的 `node_mcp.cpp` 代码。
+3. **如何修改总线最大容量？**
+请修改 `components/common/shm_layout.h` 中的 `SHM_SIZE` (共享内存总大小)、`MAX_NODES` (最大节点数) 和 `QUEUE_CAPACITY` (单个队列深度，**必须是2的幂次方**！)。修改后需全量重新编译。
+
+---
+
+*Powered by High-Performance C++17 & Lock-Free Programming*

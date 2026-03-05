@@ -66,7 +66,7 @@ sleep 0.5
 echo "========================================================"
 echo "🎉 软总线底座已全面就绪！"
 echo "🧠 请在第二个终端执行以下命令唤醒 Inspector："
-echo -e "\033[1;32m NODE_OPTIONS=\"--max-old-space-size=256\" npx @modelcontextprotocol/inspector $BUILD_DIR/node_mcp \033[0m"
+echo -e "npx @modelcontextprotocol/inspector $BUILD_DIR/node_mcp \033[0m"
 echo "========================================================"
 
 wait
