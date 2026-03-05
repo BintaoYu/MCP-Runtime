@@ -22,7 +22,12 @@ int main() {
 
     int t = 0;
     while (t < T) {
-        controller.emit(target_id, TYPE_ID(MotorControl), &cmd, sizeof(cmd));
+        if (!controller.emit(target_id, TYPE_ID(MotorControl), &cmd, sizeof(cmd))) {
+            std::cerr << "发送指令失败：目标节点队列已满或已离线。\n";
+        } 
+        else {
+            std::cout << "指令发送成功！\n";
+        }
         t++;
         usleep(1000); // 每 1ms 发一条
     }

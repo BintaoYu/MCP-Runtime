@@ -23,7 +23,7 @@ int main() {
     constexpr int NUM_THREADS = 8;
     constexpr int ALLOCS_PER_THREAD = 10000;
 
-    auto worker_task = [&](int thread_id) {
+    auto worker_task = [&](int /*thread_id*/) {
         // 模拟一个独立的业务容器进程
         ThreadLocalCache local_cache(base_addr); 
         std::vector<void*> allocated_ptrs;

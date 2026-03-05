@@ -1,21 +1,22 @@
-#include "mcp/MCPResourceNode.hpp"
-#include "business_types.h" // 包含 MotorControl 定义
+#include "../components/mcp/MCPResourceNode.hpp"
+#include "business_types.h"
 #include <iostream>
+#include <string>
 #include <thread>
+#include <nlohmann/json.hpp>
 
 using namespace shm_bus;
+using json = nlohmann::json;
 
 int main() {
     MCPResourceNode mcp_bridge;
 
-    // 1. 注册 MotorControl 的解析逻辑 (反射与序列化)
+    // 注册 MotorControl 解析逻辑
     mcp_bridge.register_type_parser(
         TYPE_ID(MotorControl), 
         "MotorControl", 
         [](const EventData* event) -> json {
-            // 极限强转，零拷贝读取
             const auto* data = reinterpret_cast<const MotorControl*>(event->payload);
-            // 组装呈现给 LLM 的 JSON
             return json{
                 {"speed_rpm", data->speed},
                 {"torque_nm", data->torque},
@@ -25,22 +26,63 @@ int main() {
         }
     );
 
-    // 2. 启动一个独立线程运行软总线的事件泵 (0% CPU 挂起监听)
+    // 启动后台线程运行软总线监听
     std::thread bus_thread([&mcp_bridge]() {
-        std::cout << "[MCP Bridge] 连接至底层工业总线，监听中...\n";
         mcp_bridge.run(); 
     });
+    bus_thread.detach(); // 分离线程，让主线程专注处理 LLM 的 JSON 请求
 
-    // 3. 模拟 MCP Server 的异步 HTTP/JSON-RPC 请求 (主线程)
-    // 在真实的 MCP Server 中，这里将是对接 stdio 或 SSE 连接的代码
-    std::this_thread::sleep_for(std::chrono::seconds(2)); // 等待数据积累
-    
-    std::cout << "\n--- LLM 请求: 发现资源 (resources/list) ---\n";
-    std::cout << mcp_bridge.mcp_list_resources().dump(2) << "\n";
+    // ========================================================================
+    // 核心：MCP 协议 JSON-RPC 2.0 事件循环 (Stdio 通信)
+    // ========================================================================
+    std::string line;
+    while (std::getline(std::cin, line)) {
+        try {
+            json req = json::parse(line);
+            
+            // 忽略没有 id 或 method 的非标准请求
+            if (!req.contains("method")) continue;
 
-    std::cout << "\n--- LLM 请求: 读取数据 (resources/read) ---\n";
-    std::cout << mcp_bridge.mcp_read_resource("bus://types/MotorControl/latest").dump(2) << "\n";
+            json res = {{"jsonrpc", "2.0"}};
+            if (req.contains("id")) {
+                res["id"] = req["id"];
+            }
+            
+            std::string method = req["method"];
 
-    bus_thread.join();
+            // 1. 初始化握手：告诉大模型我具备什么能力
+            if (method == "initialize") {
+                res["result"] = {
+                    {"protocolVersion", "2024-11-05"},
+                    {"capabilities", {{"resources", json::object()}}},
+                    {"serverInfo", {{"name", "cxx-softbus-mcp"}, {"version", "1.0.0"}}}
+                };
+            } 
+            // 2. 握手确认：静默放行
+            else if (method == "notifications/initialized") {
+                continue; 
+            } 
+            // 3. 资源发现请求
+            else if (method == "resources/list") {
+                res["result"] = mcp_bridge.mcp_list_resources();
+            } 
+            // 4. 资源读取请求
+            else if (method == "resources/read") {
+                std::string uri = req["params"]["uri"];
+                res["result"] = mcp_bridge.mcp_read_resource(uri);
+            } 
+            // 未知方法兜底
+            else {
+                res["error"] = {{"code", -32601}, {"message", "Method not found"}};
+            }
+
+            // 【极度关键】：MCP 协议要求必须是单行 JSON 且以换行符结尾，必须 flush
+            std::cout << res.dump() << std::endl;
+
+        } catch (...) {
+            // 捕获所有异常，防止畸形 JSON 导致网关崩溃
+        }
+    }
+
     return 0;
 }

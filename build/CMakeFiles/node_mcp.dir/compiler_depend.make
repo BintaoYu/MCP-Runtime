@@ -773,8 +773,12 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/
   ../components/common/shm_types.h \
   ../components/allocator/shm_allocator.h \
   /usr/include/c++/11/atomic \
-  ../components/mpsc_queue/lockfree_mpsc.h
+  ../components/mpsc_queue/lockfree_mpsc.h \
+  /usr/include/c++/11/mutex \
+  /usr/include/c++/11/bits/unique_lock.h
 
+
+/usr/include/c++/11/mutex:
 
 ../apps/business_types.h:
 
@@ -1355,6 +1359,8 @@ CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/
 /usr/include/c++/11/bits/hashtable_policy.h:
 
 /usr/include/c++/11/bits/stl_relops.h:
+
+/usr/include/c++/11/bits/unique_lock.h:
 
 /usr/include/c++/11/bits/uses_allocator.h:
 

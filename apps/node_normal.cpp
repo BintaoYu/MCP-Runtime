@@ -26,7 +26,9 @@ int main() {
     // 3. 注入业务并转发
     filter.set_handler([target_id](NormalNode* self, const EventData* event) {
         std::string processed = std::string(event->payload) + " -> [Filtered]";
-        self->forward(target_id, 200, processed.c_str(), processed.size() + 1);
+        if (!self->forward(target_id, 200, processed.c_str(), processed.size() + 1)) {
+            std::cerr << "[Normal] 转发失败：下游节点异常。\n";
+        }
     });
     filter.run(); 
 }

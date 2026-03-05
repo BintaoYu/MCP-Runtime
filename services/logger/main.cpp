@@ -5,6 +5,9 @@
 #include <fstream>
 #include <sched.h>
 #include <pthread.h>
+#include <thread>   // 【C++11/17】现代线程休眠
+#include <chrono>   // 【C++11/17】现代时间库
+#include <memory>   // 【C++11/17】智能指针
 #include "common/shm_layout.h"
 
 using namespace shm_bus;
@@ -24,7 +27,6 @@ void pin_to_core(int core_id) {
 int main() {
     std::cout << "=== P2P 旁路监控服务 (Observability Reaper) 启动 ===\n";
 
-    // 绑定到系统的最后一个逻辑核
     long num_cores = sysconf(_SC_NPROCESSORS_ONLN);
     if (num_cores > 1) {
         pin_to_core(num_cores - 1); 
@@ -40,11 +42,11 @@ int main() {
     
     ShmHeader* header = static_cast<ShmHeader*>(base_addr);
 
-    // 预分配大块缓存，防止写 CSV 时发生频繁的磁盘 I/O 碎片
+    // 【C++17 优化】使用 RAII 智能指针管理 I/O 缓冲区，彻底告别 new/delete 的内存泄漏风险
     std::ofstream csv_file("p2p_latency_trace.csv", std::ios::trunc);
-    const size_t file_buf_size = 1024 * 1024; // 1MB 内存写缓冲
-    char* file_buffer = new char[file_buf_size];
-    csv_file.rdbuf()->pubsetbuf(file_buffer, file_buf_size);
+    constexpr size_t file_buf_size = 1024 * 1024; // 1MB 内存写缓冲
+    auto file_buffer = std::make_unique<char[]>(file_buf_size);
+    csv_file.rdbuf()->pubsetbuf(file_buffer.get(), file_buf_size);
     
     csv_file << "source_id,target_id,latency_ns\n";
 
@@ -53,13 +55,10 @@ int main() {
     LogEvent log_ev;
     uint64_t flush_counter = 0;
     
-    // 死循环旁路收割
     while (true) {
         bool idle = true;
         
-        // 扫街：轮询所有节点的监控信箱
         for (int i = 0; i < MAX_NODES; ++i) {
-            // 一次性掏空当前节点积压的全部日志
             while (header->log_queues[i].pop(log_ev)) {
                 idle = false;
                 csv_file << log_ev.src_id << "," 
@@ -69,19 +68,15 @@ int main() {
             }
         }
 
-        // 批量刷盘策略：每收集满 50000 条，将内存 buffer 刷入磁盘
         if (flush_counter >= 50000) {
             csv_file.flush();
             flush_counter = 0;
         }
 
-        // 如果整整一圈扫下来，512 个节点一条新日志都没有
         if (idle) {
-            // 旁路进程妥协：主动休眠 100 微秒，让出总线带宽，防止把内存带宽打满
-            // 这种设计在不影响核心业务的前提下，极大降低了系统的整体功耗
-            usleep(100); 
+            // 【C++17 优化】使用现代 chrono 和 thread 库替代古老的 usleep
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
             
-            // 闲暇时顺手把没满的 buffer 也刷进磁盘
             if (flush_counter > 0) {
                 csv_file.flush();
                 flush_counter = 0;
@@ -89,6 +84,6 @@ int main() {
         }
     }
 
-    delete[] file_buffer;
+    // 无需手动 delete[]，离开作用域 unique_ptr 自动清理
     return 0;
 }

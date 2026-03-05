@@ -1,31 +1,28 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include <string_view>
 
 namespace shm_bus {
 
-// 定义偏移量类型，替代传统的 void* 指针，解决跨容器地址异构问题
 using offset_t = uint32_t;
 
-// 定义一个特殊的常量，代表空指针
-constexpr offset_t NULL_OFFSET = 0xFFFFFFFF;
+// C++17 内联常量，直接在头文件定义，杜绝多重定义错误
+inline constexpr offset_t NULL_OFFSET = 0xFFFFFFFF;
+inline constexpr std::size_t BLOCK_SIZE = 256;
 
-// 定义统一的内存块大小 (256 字节)
-constexpr std::size_t BLOCK_SIZE = 256;
-
-// 隐藏的递归实现函数
-constexpr uint32_t hash_type_impl(const char* str, uint32_t hash) {
-    return (*str == '\0') 
-        ? hash 
-        : hash_type_impl(str + 1, (hash ^ static_cast<uint32_t>(*str)) * 16777619u);
+// ============================================================================
+// 编译期类型哈希函数 (C++17 优化版)
+// ============================================================================
+constexpr uint32_t hash_type(std::string_view str) {
+    uint32_t hash = 2166136261u; // FNV_OFFSET_BASIS_32
+    for (char c : str) {
+        hash ^= static_cast<uint32_t>(c);
+        hash *= 16777619u;       // FNV_PRIME_32
+    }
+    return hash;
 }
 
-// 对外暴露的接口
-constexpr uint32_t hash_type(const char* str) {
-    return hash_type_impl(str, 2166136261u); // 传入 FNV-1a 的初始偏移量
-}
-
-// 辅助宏
 #define TYPE_ID(type_name) shm_bus::hash_type(#type_name)
 
 } // namespace shm_bus
