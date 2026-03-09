@@ -1,8 +1,10 @@
 file(REMOVE_RECURSE
   "CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o"
   "CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o.d"
-  "CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o"
-  "CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o.d"
+  "CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o"
+  "CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o.d"
+  "CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o"
+  "CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o.d"
   "node_mcp"
   "node_mcp.pdb"
 )

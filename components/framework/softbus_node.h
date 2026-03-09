@@ -10,7 +10,7 @@
 #include <functional>
 #include <string_view>
 #include <atomic>
-#include <vector> 
+#include <vector>
 
 #if defined(__x86_64__) || defined(_M_X64)
 #include <emmintrin.h> 
@@ -134,13 +134,71 @@ public:
         return targets;
     }
 
+    // ========================================================================
+    // 【全新能力】：高并发无锁状态缓存读写 (RCU 思想)
+    // ========================================================================
+    void put_state(uint32_t key_hash, const void* payload, size_t payload_len) {
+        if (!header_) return;
+
+        void* payload_block = nullptr;
+        void* node_block = nullptr;
+        try {
+            payload_block = local_cache_.allocate();
+            nt_memcpy(payload_block, payload, std::min(payload_len, (size_t)256));
+            offset_t payload_off = local_cache_.get_offset(payload_block);
+
+            node_block = local_cache_.allocate();
+            CacheNode* new_node = new (node_block) CacheNode();
+            new_node->key_hash = key_hash;
+            new_node->timestamp = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+            new_node->payload_offset = payload_off;
+            new_node->next_node_offset.store(NULL_OFFSET, std::memory_order_relaxed);
+
+            offset_t new_node_off = local_cache_.get_offset(node_block);
+            
+            std::size_t bucket_idx = header_->global_state_cache.get_bucket_index(key_hash);
+            std::atomic<offset_t>& bucket_head = header_->global_state_cache.get_buckets()[bucket_idx];
+
+            // RCU 头插法无锁原子替换
+            offset_t expected_head = bucket_head.load(std::memory_order_acquire);
+            do {
+                new_node->next_node_offset.store(expected_head, std::memory_order_relaxed);
+            } while (!bucket_head.compare_exchange_weak(
+                expected_head, new_node_off,
+                std::memory_order_release, std::memory_order_relaxed));
+        } catch (const std::bad_alloc&) {
+            if (payload_block) local_cache_.deallocate(payload_block);
+            if (node_block) local_cache_.deallocate(node_block);
+        }
+    }
+
+    size_t get_state(uint32_t key_hash, void* out_buffer, size_t max_len) {
+        if (!header_) return 0;
+
+        std::size_t bucket_idx = header_->global_state_cache.get_bucket_index(key_hash);
+        offset_t current_off = header_->global_state_cache.get_buckets()[bucket_idx].load(std::memory_order_acquire);
+
+        // Wait-free 无锁遍历
+        while (current_off != NULL_OFFSET) {
+            CacheNode* node = local_cache_.get_ptr<CacheNode>(current_off);
+            if (node->key_hash == key_hash) {
+                void* payload_ptr = local_cache_.get_ptr<void>(node->payload_offset);
+                size_t copy_len = std::min(max_len, (size_t)256);
+                nt_memcpy(out_buffer, payload_ptr, copy_len);
+                return copy_len;
+            }
+            current_off = node->next_node_offset.load(std::memory_order_acquire);
+        }
+        return 0; 
+    }
+
 protected:
     [[nodiscard]] bool do_push_to_queue(uint32_t tid, uint32_t msg_type, const void* payload, size_t payload_len) {
         if (tid >= MAX_NODES || !header_->node_registered[tid].load(std::memory_order_acquire)) return false;
 
         void* block = nullptr;
         try {
-            // 【健壮性补丁】：捕获 OOM 异常，宁可丢包绝不崩溃
+            // 防 OOM 崩溃补丁
             block = local_cache_.allocate();
         } catch (const std::bad_alloc&) {
             return false;
@@ -168,7 +226,7 @@ protected:
 
     void do_snoop(uint32_t msg_type, const void* payload, size_t payload_len) {
         if (cached_mcp_id_ < 0) {
-            if (mcp_lookup_counter_++ % 100 == 0) cached_mcp_id_ = lookup_node("MCPServerBridge", 0);
+            if (mcp_lookup_counter_++ % 100 == 0) cached_mcp_id_ = lookup_node("MCPServerEngine", 0);
         }
         if (cached_mcp_id_ >= 0 && (uint32_t)cached_mcp_id_ != my_id_) {
             if (header_->node_registered[cached_mcp_id_].load(std::memory_order_acquire)) {

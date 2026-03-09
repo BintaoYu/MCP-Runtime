@@ -1,5 +1,7 @@
-CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
- /home/ubuntu/.ssh/softbus/apps/node_mcp.cpp /usr/include/stdc-predef.h \
+CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o: \
+ /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.cpp \
+ /usr/include/stdc-predef.h \
+ /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.hpp \
  /home/ubuntu/.ssh/softbus/components/mcp/MCPEngine.hpp \
  /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
@@ -315,5 +317,4 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h \
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h \
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h \
- /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.hpp \
- /home/ubuntu/.ssh/softbus/apps/business_types.h
+ /home/ubuntu/.ssh/softbus/components/../apps/business_types.h

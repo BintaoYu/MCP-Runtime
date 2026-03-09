@@ -377,29 +377,53 @@ components/allocator/test_allocator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_allocator.dir/build.make CMakeFiles/test_allocator.dir/components/allocator/test_allocator.cpp.s
 .PHONY : components/allocator/test_allocator.cpp.s
 
-components/mcp/MCPResourceNode.o: components/mcp/MCPResourceNode.cpp.o
-.PHONY : components/mcp/MCPResourceNode.o
+components/mcp/MCPEngine.o: components/mcp/MCPEngine.cpp.o
+.PHONY : components/mcp/MCPEngine.o
 
 # target to build an object file
-components/mcp/MCPResourceNode.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o
-.PHONY : components/mcp/MCPResourceNode.cpp.o
+components/mcp/MCPEngine.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o
+.PHONY : components/mcp/MCPEngine.cpp.o
 
-components/mcp/MCPResourceNode.i: components/mcp/MCPResourceNode.cpp.i
-.PHONY : components/mcp/MCPResourceNode.i
+components/mcp/MCPEngine.i: components/mcp/MCPEngine.cpp.i
+.PHONY : components/mcp/MCPEngine.i
 
 # target to preprocess a source file
-components/mcp/MCPResourceNode.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.i
-.PHONY : components/mcp/MCPResourceNode.cpp.i
+components/mcp/MCPEngine.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.i
+.PHONY : components/mcp/MCPEngine.cpp.i
 
-components/mcp/MCPResourceNode.s: components/mcp/MCPResourceNode.cpp.s
-.PHONY : components/mcp/MCPResourceNode.s
+components/mcp/MCPEngine.s: components/mcp/MCPEngine.cpp.s
+.PHONY : components/mcp/MCPEngine.s
 
 # target to generate assembly for a file
-components/mcp/MCPResourceNode.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.s
-.PHONY : components/mcp/MCPResourceNode.cpp.s
+components/mcp/MCPEngine.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.s
+.PHONY : components/mcp/MCPEngine.cpp.s
+
+components/mcp/ToolRegistry.o: components/mcp/ToolRegistry.cpp.o
+.PHONY : components/mcp/ToolRegistry.o
+
+# target to build an object file
+components/mcp/ToolRegistry.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o
+.PHONY : components/mcp/ToolRegistry.cpp.o
+
+components/mcp/ToolRegistry.i: components/mcp/ToolRegistry.cpp.i
+.PHONY : components/mcp/ToolRegistry.i
+
+# target to preprocess a source file
+components/mcp/ToolRegistry.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.i
+.PHONY : components/mcp/ToolRegistry.cpp.i
+
+components/mcp/ToolRegistry.s: components/mcp/ToolRegistry.cpp.s
+.PHONY : components/mcp/ToolRegistry.s
+
+# target to generate assembly for a file
+components/mcp/ToolRegistry.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.s
+.PHONY : components/mcp/ToolRegistry.cpp.s
 
 components/mpsc_queue/test_mpsc.o: components/mpsc_queue/test_mpsc.cpp.o
 .PHONY : components/mpsc_queue/test_mpsc.o
@@ -508,9 +532,12 @@ help:
 	@echo "... components/allocator/test_allocator.o"
 	@echo "... components/allocator/test_allocator.i"
 	@echo "... components/allocator/test_allocator.s"
-	@echo "... components/mcp/MCPResourceNode.o"
-	@echo "... components/mcp/MCPResourceNode.i"
-	@echo "... components/mcp/MCPResourceNode.s"
+	@echo "... components/mcp/MCPEngine.o"
+	@echo "... components/mcp/MCPEngine.i"
+	@echo "... components/mcp/MCPEngine.s"
+	@echo "... components/mcp/ToolRegistry.o"
+	@echo "... components/mcp/ToolRegistry.i"
+	@echo "... components/mcp/ToolRegistry.s"
 	@echo "... components/mpsc_queue/test_mpsc.o"
 	@echo "... components/mpsc_queue/test_mpsc.i"
 	@echo "... components/mpsc_queue/test_mpsc.s"

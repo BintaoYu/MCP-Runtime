@@ -97,7 +97,7 @@ clean: CMakeFiles/node_mcp.dir/clean
 CMakeFiles/shm_allocator.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shm_allocator.dir/build.make CMakeFiles/shm_allocator.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shm_allocator.dir/build.make CMakeFiles/shm_allocator.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=10,11 "Built target shm_allocator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=11,12 "Built target shm_allocator"
 .PHONY : CMakeFiles/shm_allocator.dir/all
 
 # Build rule for subdir invocation for target.
@@ -123,7 +123,7 @@ CMakeFiles/shm_allocator.dir/clean:
 CMakeFiles/test_allocator.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_allocator.dir/build.make CMakeFiles/test_allocator.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_allocator.dir/build.make CMakeFiles/test_allocator.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=16,17 "Built target test_allocator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=17,18 "Built target test_allocator"
 .PHONY : CMakeFiles/test_allocator.dir/all
 
 # Build rule for subdir invocation for target.
@@ -149,7 +149,7 @@ CMakeFiles/test_allocator.dir/clean:
 CMakeFiles/test_mpsc.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_mpsc.dir/build.make CMakeFiles/test_mpsc.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_mpsc.dir/build.make CMakeFiles/test_mpsc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=18,19 "Built target test_mpsc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=19,20 "Built target test_mpsc"
 .PHONY : CMakeFiles/test_mpsc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -175,7 +175,7 @@ CMakeFiles/test_mpsc.dir/clean:
 CMakeFiles/shm_registry.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shm_registry.dir/build.make CMakeFiles/shm_registry.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shm_registry.dir/build.make CMakeFiles/shm_registry.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=14,15 "Built target shm_registry"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=15,16 "Built target shm_registry"
 .PHONY : CMakeFiles/shm_registry.dir/all
 
 # Build rule for subdir invocation for target.
@@ -201,7 +201,7 @@ CMakeFiles/shm_registry.dir/clean:
 CMakeFiles/shm_logger.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shm_logger.dir/build.make CMakeFiles/shm_logger.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shm_logger.dir/build.make CMakeFiles/shm_logger.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=12,13 "Built target shm_logger"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=13,14 "Built target shm_logger"
 .PHONY : CMakeFiles/shm_logger.dir/all
 
 # Build rule for subdir invocation for target.
@@ -227,7 +227,7 @@ CMakeFiles/shm_logger.dir/clean:
 CMakeFiles/node_source.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_source.dir/build.make CMakeFiles/node_source.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_source.dir/build.make CMakeFiles/node_source.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=8,9 "Built target node_source"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=9,10 "Built target node_source"
 .PHONY : CMakeFiles/node_source.dir/all
 
 # Build rule for subdir invocation for target.
@@ -253,7 +253,7 @@ CMakeFiles/node_source.dir/clean:
 CMakeFiles/node_sink.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_sink.dir/build.make CMakeFiles/node_sink.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_sink.dir/build.make CMakeFiles/node_sink.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=6,7 "Built target node_sink"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=7,8 "Built target node_sink"
 .PHONY : CMakeFiles/node_sink.dir/all
 
 # Build rule for subdir invocation for target.
@@ -279,7 +279,7 @@ CMakeFiles/node_sink.dir/clean:
 CMakeFiles/node_normal.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_normal.dir/build.make CMakeFiles/node_normal.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_normal.dir/build.make CMakeFiles/node_normal.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=4,5 "Built target node_normal"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=5,6 "Built target node_normal"
 .PHONY : CMakeFiles/node_normal.dir/all
 
 # Build rule for subdir invocation for target.
@@ -305,12 +305,12 @@ CMakeFiles/node_normal.dir/clean:
 CMakeFiles/node_mcp.dir/all: CMakeFiles/shm_allocator.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/node_mcp.dir/build.make CMakeFiles/node_mcp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=1,2,3 "Built target node_mcp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=1,2,3,4 "Built target node_mcp"
 .PHONY : CMakeFiles/node_mcp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/node_mcp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/.ssh/softbus/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/.ssh/softbus/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/node_mcp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/.ssh/softbus/build/CMakeFiles 0
 .PHONY : CMakeFiles/node_mcp.dir/rule

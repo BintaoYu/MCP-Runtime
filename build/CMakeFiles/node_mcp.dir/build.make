@@ -83,34 +83,50 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/.ssh/softbus/apps/node_mcp.cpp -o CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.s
 
-CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: CMakeFiles/node_mcp.dir/flags.make
-CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: ../components/mcp/MCPResourceNode.cpp
-CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o: CMakeFiles/node_mcp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o -MF CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o.d -o CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o -c /home/ubuntu/.ssh/softbus/components/mcp/MCPResourceNode.cpp
+CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o: CMakeFiles/node_mcp.dir/flags.make
+CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o: ../components/mcp/MCPEngine.cpp
+CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o: CMakeFiles/node_mcp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o -MF CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o.d -o CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o -c /home/ubuntu/.ssh/softbus/components/mcp/MCPEngine.cpp
 
-CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/.ssh/softbus/components/mcp/MCPResourceNode.cpp > CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.i
+CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/.ssh/softbus/components/mcp/MCPEngine.cpp > CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.i
 
-CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/.ssh/softbus/components/mcp/MCPResourceNode.cpp -o CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.s
+CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/.ssh/softbus/components/mcp/MCPEngine.cpp -o CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.s
+
+CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o: CMakeFiles/node_mcp.dir/flags.make
+CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o: ../components/mcp/ToolRegistry.cpp
+CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o: CMakeFiles/node_mcp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o -MF CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o.d -o CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o -c /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.cpp
+
+CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.cpp > CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.i
+
+CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.cpp -o CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.s
 
 # Object files for target node_mcp
 node_mcp_OBJECTS = \
 "CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o" \
-"CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o"
+"CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o" \
+"CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o"
 
 # External object files for target node_mcp
 node_mcp_EXTERNAL_OBJECTS =
 
 node_mcp: CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o
-node_mcp: CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o
+node_mcp: CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o
+node_mcp: CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o
 node_mcp: CMakeFiles/node_mcp.dir/build.make
 node_mcp: libshm_allocator.a
 node_mcp: CMakeFiles/node_mcp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable node_mcp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ubuntu/.ssh/softbus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable node_mcp"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/node_mcp.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

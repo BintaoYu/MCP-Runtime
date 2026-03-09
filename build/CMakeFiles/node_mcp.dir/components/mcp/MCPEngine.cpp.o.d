@@ -1,5 +1,6 @@
-CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
- /home/ubuntu/.ssh/softbus/apps/node_mcp.cpp /usr/include/stdc-predef.h \
+CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o: \
+ /home/ubuntu/.ssh/softbus/components/mcp/MCPEngine.cpp \
+ /usr/include/stdc-predef.h \
  /home/ubuntu/.ssh/softbus/components/mcp/MCPEngine.hpp \
  /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
@@ -315,5 +316,25 @@ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o: \
  /home/ubuntu/.ssh/softbus/components/common/shm_types.h \
  /home/ubuntu/.ssh/softbus/components/allocator/shm_allocator.h \
  /home/ubuntu/.ssh/softbus/components/mpsc_queue/lockfree_mpsc.h \
- /home/ubuntu/.ssh/softbus/components/mcp/ToolRegistry.hpp \
- /home/ubuntu/.ssh/softbus/apps/business_types.h
+ /usr/include/c++/11/csignal /usr/include/signal.h \
+ /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
+ /usr/include/x86_64-linux-gnu/bits/signum-arch.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
+ /usr/include/x86_64-linux-gnu/bits/siginfo-arch.h \
+ /usr/include/x86_64-linux-gnu/bits/siginfo-consts.h \
+ /usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sigval_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
+ /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h \
+ /usr/include/x86_64-linux-gnu/bits/sigaction.h \
+ /usr/include/x86_64-linux-gnu/bits/sigcontext.h \
+ /usr/include/x86_64-linux-gnu/bits/types/stack_t.h \
+ /usr/include/x86_64-linux-gnu/sys/ucontext.h \
+ /usr/include/x86_64-linux-gnu/bits/sigstack.h \
+ /usr/include/x86_64-linux-gnu/bits/sigstksz.h \
+ /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
+ /usr/include/x86_64-linux-gnu/bits/sigthread.h \
+ /usr/include/x86_64-linux-gnu/bits/signal_ext.h

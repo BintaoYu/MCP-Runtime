@@ -51,6 +51,7 @@ target_link_libraries(node_normal PRIVATE shm_allocator Threads::Threads rt)
 # ============================================================================
 add_executable(node_mcp 
     apps/node_mcp.cpp 
-    components/mcp/MCPResourceNode.cpp
+    components/mcp/MCPEngine.cpp
+    components/mcp/ToolRegistry.cpp
 )
 target_link_libraries(node_mcp PRIVATE shm_allocator Threads::Threads rt)

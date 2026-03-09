@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o CMakeFiles/node_mcp.dir/components/mcp/MCPResourceNode.cpp.o -o node_mcp  libshm_allocator.a -lrt 
+/usr/bin/c++ CMakeFiles/node_mcp.dir/apps/node_mcp.cpp.o CMakeFiles/node_mcp.dir/components/mcp/MCPEngine.cpp.o CMakeFiles/node_mcp.dir/components/mcp/ToolRegistry.cpp.o -o node_mcp  libshm_allocator.a -lrt 
