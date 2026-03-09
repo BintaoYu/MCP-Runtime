@@ -96,6 +96,18 @@ void ToolRegistry::register_all(MCPEngine& engine) {
             return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "发送失败，目标控制器可能不在线"}}})}};
         }
     );
+    // 4. 直接读取最新传感器数据（利用底层 O(1) 无锁缓存）
+    engine.register_tool(
+        ToolBuilder("read_sensor_now").description("立刻读取当前传感器的最新温度").build(),
+        [&engine](const json& args) -> json {
+            SensorData data;
+            // 直接从底层 O(1) 无锁缓存中捞取最新一帧
+            if (engine.get_bus_node()->get_state(shm_bus::hash_type("SensorData"), &data, sizeof(data)) > 0) {
+                return {{"content", json::array({{{"type", "text"}, {"text", "当前温度: " + std::to_string(data.temperature)}}})}};
+            }
+            return {{"isError", true}, {"content", json::array({{{"type", "text"}, {"text", "暂无数据"}}})}};
+        }
+    );
 }
 
 } // namespace shm_bus
