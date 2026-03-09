@@ -1,2 +1,2 @@
 ./build
-p2p_latency_trace.csv
+./*.csv
