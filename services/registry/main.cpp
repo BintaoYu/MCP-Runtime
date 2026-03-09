@@ -40,9 +40,11 @@ int main() {
     }
 
     // 初始化 Pub/Sub 订阅矩阵，默认全部断开
-    for (int i = 0; i < 256; ++i) {
-        for (uint32_t j = 0; j < MAX_NODES; ++j) {
-            header->route_table[i][j].store(false, std::memory_order_relaxed);
+    for (int src = 0; src < MAX_NODES; ++src) {
+        for (int type_idx = 0; type_idx < 256; ++type_idx) {
+            for (int dst = 0; dst < MAX_NODES; ++dst) {
+                header->route_table[src][type_idx][dst].store(false, std::memory_order_relaxed);
+            }
         }
     }
 

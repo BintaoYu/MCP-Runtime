@@ -9,21 +9,10 @@ int main() {
     // 1. 初始化无状态的 MCP 网关引擎
     MCPEngine engine("cxx-softbus-mcp", "1.1.0");
 
-    // 2. 绑定底层无锁缓存 (O(1)极速查询，无需订阅队列)
-    engine.bind_cache_resource<SensorData>(
-        "SensorData", TYPE_ID("SensorData"), 
-        [](const SensorData* data) {
-            return json{{"temperature_c", data->temperature}, {"humidity_percent", data->humidity}};
-        }
-    );
-
-    engine.bind_cache_resource<MotorControl>(
-        "MotorControl", TYPE_ID("MotorControl"), 
-        [](const MotorControl* data) {
-            return json{{"speed_rpm", data->speed}, {"torque_nm", data->torque}, {"direction", data->direction}};
-        }
-    );
-
+    // 注册 AI 观测路由：打通大模型 URI 到底层纯二进制缓存的 O(1) 寻址与 JSON 自动翻译
+    REG_MCP_CACHE(engine, SensorData);
+    REG_MCP_CACHE(engine, MotorControl);
+    // REG_MCP_CACHE_NAMED(engine, "LivingRoom_Temp", SensorData); 
     // 3. 一键挂载所有注册的工具算子
     ToolRegistry::register_all(engine);
 

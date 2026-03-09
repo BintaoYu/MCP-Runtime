@@ -1,24 +1,24 @@
 #include "framework/softbus_node.h"
 #include "business_types.h"
 #include <iostream>
-#include <string>
 
 using namespace shm_bus;
 
 int main() {
-    SinkNode dashboard("DashboardUI", TYPE_MOTOR_CONTROL);
-    std::cout << "[节点C] 仪表盘已上线！等待接收电机指令...\n";
+    // 启动一个专门监听 MotorControl 类型的接收节点
+    SinkNode motor("MotorHardware", TYPE_ID(MotorControl));
+    std::cout << "⚙️ 电机执行节点已启动，等待控制指令...\n";
 
-    dashboard.set_handler([&dashboard](const EventData* event) {
-        const auto* data = reinterpret_cast<const MotorControl*>(event->payload);
-        std::string sender_name = dashboard.get_node_name(event->src_id);
-        if (sender_name == "MCPServerBridge") {
-            std::cout << "\n 🤖 [AI 越权接管] 收到 MCP 大模型最高权限指令！转速: " << data->speed << " RPM\n";
-        } else {
-            std::cout << "\n 📺 [仪表盘] 收到来自 [" << sender_name << "] 的电机指令 | 转速: " << data->speed << " RPM\n";
-        }
+    motor.set_handler([](const EventData* event) {
+        const auto* cmd = reinterpret_cast<const MotorControl*>(event->payload);
+        
+        // 打印接收到的指令，模拟硬件控制
+        // 由于是从无锁队列 pop 出来的，这里的延迟可以逼近亚微秒级
+        std::cout << "[硬件执行] 收到电机指令 -> 转速: " << cmd->speed 
+                  << " RPM, 扭矩: " << cmd->torque 
+                  << " Nm, 转向: " << cmd->direction << "\n";
     });
 
-    dashboard.run();
+    motor.run();
     return 0;
 }

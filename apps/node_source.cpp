@@ -1,26 +1,32 @@
 #include "framework/softbus_node.h"
 #include "business_types.h"
-#include <unistd.h>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 using namespace shm_bus;
 
 int main() {
-    SourceNode sensor("TempSensor"); 
-    
-    std::cout << "[节点A] 温度传感器已上线！只负责输出数据 (Type: 1)\n";
-    SensorData data = {25.0f, 50.0f};
- 
-    while (true) {
-        // 完全不关心发给谁，向总线抛出 TYPE_SENSOR_DATA
-        bool routed = sensor.publish(TYPE_SENSOR_DATA, &data, sizeof(data));
-        
-        if (routed) std::cout << "." << std::flush;
-        else std::cout << "x" << std::flush;
+    SourceNode sensor("TempSensor");
+    std::cout << "🌡️ 传感器节点已启动，开始高频采集数据...\n";
 
-        data.temperature += 0.5f;
-        if (data.temperature > 100.0f) data.temperature = 25.0f;
-        usleep(1000000); 
+    float temp = 25.0f;
+    while (true) {
+        SensorData data{temp, 60.0f};
+        
+        // 1. 发送流式事件给订阅了该主题的节点 (走 MPSC 无锁队列)
+        // 注意：TYPE_ID 宏里不要加双引号，直接传类型名即可
+        (void)sensor.publish(TYPE_ID(SensorData), &data, sizeof(data));
+        
+        // 2. 将最新状态写入全局高并发缓存，供 MCP 引擎 (大模型) 零延迟读取
+        sensor.put_state(TYPE_ID(SensorData), &data, sizeof(data));
+
+        // 模拟温度变化
+        temp += 0.2f;
+        if (temp > 35.0f) temp = 25.0f;
+
+        // 模拟 10Hz 的高频采样率
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     return 0;
 }

@@ -5,27 +5,26 @@
 using namespace shm_bus;
 
 int main() {
-    NormalNode processor("AI_Controller", TYPE_SENSOR_DATA);
-    std::cout << "[节点B] AI 控制器已上线！等待接收温度数据...\n";
+    // 启动一个监听 SensorData 类型的普通节点
+    NormalNode controller("AutomatedController", TYPE_ID(SensorData));
+    std::cout << "🧠 自动化控制节点已启动，监听传感器数据...\n";
 
-    processor.set_handler([&processor](NormalNode* self, const EventData* event) {
+    controller.set_handler([&controller](NormalNode* self, const EventData* event) {
         const auto* sensor = reinterpret_cast<const SensorData*>(event->payload);
         
-        MotorControl cmd;
-        cmd.speed = sensor->temperature * 50.0f; 
-        cmd.torque = 10.5f;
-        cmd.direction = 1;
-
-        std::cout << "\n [AI大脑] 收到温度: " << sensor->temperature 
-                  << "℃ -> 计算出电机转速: " << cmd.speed << " RPM. 正在向外盲发指令...";
-
-        // 【核心修复】：规范接收 [[nodiscard]] 的返回值，并增加状态提示
-        bool routed = self->publish(TYPE_MOTOR_CONTROL, &cmd, sizeof(cmd));
-        if (!routed) {
-            std::cout << " (提示: 链路断开，数据落入黑洞)";
+        // 简单的边缘计算逻辑：温度过高时，加速电机散热
+        MotorControl cmd{1000.0f, 2.5f, 1}; // 默认转速
+        if (sensor->temperature > 30.0f) {
+            cmd.speed = 3000.0f; // 狂暴模式
         }
+
+        // 1. 发送电机控制指令给底层的硬件节点
+        (void)self->publish(TYPE_ID(MotorControl), &cmd, sizeof(cmd));
+        
+        // 2. 同步更新电机的“期望状态”到无锁缓存，供 MCP 随时查阅
+        self->put_state(TYPE_ID(MotorControl), &cmd, sizeof(cmd));
     });
 
-    processor.run();
+    controller.run(); // 阻塞运行，利用条件变量极致休眠
     return 0;
 }

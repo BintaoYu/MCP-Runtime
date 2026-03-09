@@ -73,7 +73,7 @@ struct ShmHeader {
     MPSCQueue<offset_t, QUEUE_CAPACITY> rx_queues[MAX_NODES];
     MPSCQueue<LogEvent, QUEUE_CAPACITY> log_queues[MAX_NODES];
 
-    std::atomic<bool> route_table[256][MAX_NODES];
+    std::atomic<bool> route_table[MAX_NODES][256][MAX_NODES];
 
     // 【全新架构核心】：挂载全局高并发状态缓存树
     LockFreeShmHashMap<1024> global_state_cache;

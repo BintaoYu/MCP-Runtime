@@ -51,7 +51,7 @@ public:
         : base_addr_(MAP_FAILED), header_(nullptr), local_cache_(nullptr),
           cached_mcp_id_(-1), mcp_lookup_counter_(0) {
         int shm_fd = shm_open(SHM_NAME, O_RDWR, 0666);
-        if (shm_fd < 0) throw std::runtime_error("接入总线失败");
+        if (shm_fd < 0) throw std::runtime_error("接入总线失败，请先启动 shm_registry");
         base_addr_ = mmap(nullptr, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
         close(shm_fd);
         header_ = static_cast<ShmHeader*>(base_addr_);
@@ -99,35 +99,37 @@ public:
         return "Unknown";
     }
 
-    [[nodiscard]] int lookup_node(std::string_view target_name, uint32_t send_msg_type) const {
+    // 【升级】：支持查找源节点时忽略类型期望校验 (传 send_msg_type = 0)
+    [[nodiscard]] int lookup_node(std::string_view target_name, uint32_t send_msg_type = 0) const {
         for (int i = 0; i < MAX_NODES; ++i) {
             if (header_->node_registered[i].load(std::memory_order_acquire) && target_name == header_->node_names[i]) {
                 uint32_t target_expected = header_->expected_msg_type[i].load(std::memory_order_acquire);
-                if (target_expected == 0 || target_expected == send_msg_type) return i;
+                if (send_msg_type == 0 || target_expected == 0 || target_expected == send_msg_type) return i;
                 else return -2; 
             }
         }
         return -1; 
     }
 
-    void add_route(uint32_t msg_type, int target_id) {
-        if (header_ && target_id >= 0 && target_id < MAX_NODES) {
-            header_->route_table[msg_type % 256][target_id].store(true, std::memory_order_release);
+    // 【SDN 路由控制接口】：Source -> Type -> Destination
+    void add_route(int src_id, uint32_t msg_type, int target_id) {
+        if (header_ && src_id >= 0 && src_id < MAX_NODES && target_id >= 0 && target_id < MAX_NODES) {
+            header_->route_table[src_id][msg_type % 256][target_id].store(true, std::memory_order_release);
         }
     }
 
-    void remove_route(uint32_t msg_type, int target_id) {
-        if (header_ && target_id >= 0 && target_id < MAX_NODES) {
-            header_->route_table[msg_type % 256][target_id].store(false, std::memory_order_release);
+    void remove_route(int src_id, uint32_t msg_type, int target_id) {
+        if (header_ && src_id >= 0 && src_id < MAX_NODES && target_id >= 0 && target_id < MAX_NODES) {
+            header_->route_table[src_id][msg_type % 256][target_id].store(false, std::memory_order_release);
         }
     }
 
-    std::vector<int> get_routes(uint32_t msg_type) const {
+    std::vector<int> get_routes(int src_id, uint32_t msg_type) const {
         std::vector<int> targets;
-        if (header_) {
-            for (int i = 0; i < MAX_NODES; ++i) {
-                if (header_->route_table[msg_type % 256][i].load(std::memory_order_acquire)) {
-                    targets.push_back(i);
+        if (header_ && src_id >= 0 && src_id < MAX_NODES) {
+            for (int dst = 0; dst < MAX_NODES; ++dst) {
+                if (header_->route_table[src_id][msg_type % 256][dst].load(std::memory_order_acquire)) {
+                    targets.push_back(dst);
                 }
             }
         }
@@ -135,7 +137,7 @@ public:
     }
 
     // ========================================================================
-    // 【全新能力】：高并发无锁状态缓存读写 (RCU 思想)
+    // 高并发无锁状态缓存读写 (RCU 思想)
     // ========================================================================
     void put_state(uint32_t key_hash, const void* payload, size_t payload_len) {
         if (!header_) return;
@@ -246,9 +248,10 @@ protected:
     [[nodiscard]] bool internal_publish(uint32_t msg_type, const void* payload, size_t payload_len) {
         bool sent_any = false;
         if (header_) {
-            for (int i = 0; i < MAX_NODES; ++i) {
-                if (header_->route_table[msg_type % 256][i].load(std::memory_order_acquire)) {
-                    if (do_push_to_queue(i, msg_type, payload, payload_len)) {
+            // 【核心优化】：利用 3D 流表的内存连续性，实现硬件级的极致 Cache-line 预取寻址
+            for (int dst = 0; dst < MAX_NODES; ++dst) {
+                if (header_->route_table[my_id_][msg_type % 256][dst].load(std::memory_order_acquire)) {
+                    if (do_push_to_queue(dst, msg_type, payload, payload_len)) {
                         sent_any = true;
                     }
                 }
