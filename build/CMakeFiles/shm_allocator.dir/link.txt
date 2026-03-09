@@ -1,2 +1,0 @@
-/usr/bin/ar qc libshm_allocator.a CMakeFiles/shm_allocator.dir/components/allocator/shm_allocator.cpp.o
-/usr/bin/ranlib libshm_allocator.a

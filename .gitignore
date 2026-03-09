@@ -1,2 +1,5 @@
-build
-*.csv
+# 忽略整个 build 文件夹（末尾加 / 表示仅针对目录）
+build/
+
+# 忽略具体的文件
+p2p_latency_trace.csv

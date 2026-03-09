@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/node_sink.dir/apps/node_sink.cpp.o -o node_sink  libshm_allocator.a -lrt 

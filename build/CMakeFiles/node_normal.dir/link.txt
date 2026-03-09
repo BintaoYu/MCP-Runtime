@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/node_normal.dir/apps/node_normal.cpp.o -o node_normal  libshm_allocator.a -lrt 
