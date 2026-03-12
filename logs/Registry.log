@@ -1,0 +1,3 @@
+=== SoftBus Registry (Pub/Sub Controller) 启动 ===
+注册中心就绪，总线容量: 256 MB
+Pub/Sub 矩阵初始化完毕，等待云端大模型下发订阅指令...
